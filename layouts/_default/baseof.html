@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode }}">
+<head>
+  {{ partial "head.html" . }}
+</head>
+<body>
+  {{ partial "nav.html" . }}
+  <main id="swup" class="transition-main">
+    {{ block "main" . }}{{ end }}
+  </main>
+  <script type="module">
+    import Swup from 'https://cdn.jsdelivr.net/npm/swup@4/dist/Swup.esm.js';
+    const swup = new Swup();
+
+    function initLoadMore() {
+      document.querySelectorAll('.load-more-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          btn.closest('section').querySelectorAll('.post-hidden').forEach(el => {
+            el.classList.remove('post-hidden');
+          });
+          btn.remove();
+        });
+      });
+    }
+
+    initLoadMore();
+    swup.hooks.on('page:view', initLoadMore);
+  </script>
+</body>
+</html>
