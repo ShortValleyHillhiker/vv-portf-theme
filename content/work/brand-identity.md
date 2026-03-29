@@ -3,6 +3,7 @@ title: "Brand Identity"
 description: "Visual identity for a boutique studio"
 date: 2025-01-15
 draft: false
+image: /images/work/brand-identity.svg
 ---
 
 The brief was simple on paper: create a mark that felt handmade without looking homemade. The studio worked across ceramics, textiles, and print — disparate disciplines that needed a single thread to hold them together.

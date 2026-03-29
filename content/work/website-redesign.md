@@ -3,6 +3,7 @@ title: "Website Redesign"
 description: "Digital presence for an independent publisher"
 date: 2024-10-01
 draft: false
+image: /images/work/website-redesign.svg
 ---
 
 The publisher had been running on a template for six years. The content had outgrown it — a catalog of over four hundred titles, a quarterly journal, and a reading list that editors updated irregularly. The site was doing too many things and none of them well.

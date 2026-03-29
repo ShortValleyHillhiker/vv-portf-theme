@@ -8,8 +8,13 @@
     {{ range $i, $p := $work }}
     <li{{ if ge $i 6 }} class="post-hidden"{{ end }}>
       <a href="{{ $p.RelPermalink }}">
-        <span class="post-title">{{ $p.Title }}</span>
-        {{ with $p.Params.description }}<span class="post-meta">{{ . }}</span>{{ end }}
+        <span class="work-image">
+          {{ with $p.Params.image }}<img src="{{ . }}" alt="{{ $p.Title }}">{{ end }}
+        </span>
+        <span class="post-row">
+          <span class="post-title">{{ $p.Title }}</span>
+          {{ with $p.Params.description }}<span class="post-meta">{{ . }}</span>{{ end }}
+        </span>
       </a>
     </li>
     {{ end }}

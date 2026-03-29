@@ -3,6 +3,7 @@ title: "Campaign Direction"
 description: "Launch campaign for a considered product"
 date: 2024-06-20
 draft: false
+image: /images/work/campaign.svg
 ---
 
 The product had been in development for three years. The team had thought carefully about every material choice, every tolerance, every edge. The campaign had to earn that seriousness without being ponderous about it.
