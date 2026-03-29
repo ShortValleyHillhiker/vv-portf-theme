@@ -1,0 +1,15 @@
+{{- $pages := where .Site.RegularPages "Params.draft" "ne" true -}}
+{{- $posts := slice -}}
+{{- range $pages -}}
+  {{- $post := dict
+    "title"       .Title
+    "description" .Params.description
+    "date"        (.Date.Format "2006-01-02")
+    "banner"      .Params.banner
+    "type"        .Type
+    "category"    .Params.category
+    "url"         .RelPermalink
+  -}}
+  {{- $posts = $posts | append $post -}}
+{{- end -}}
+{{ $posts | jsonify }}
