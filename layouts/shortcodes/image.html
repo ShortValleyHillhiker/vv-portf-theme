@@ -1,0 +1,7 @@
+{{ $src := .Get "src" }}
+{{ $alt := .Get "alt" | default "" }}
+{{ $ratio := .Get "ratio" | default "16/9" }}
+{{ $span := .Get "span" | default "1" }}
+<figure class="module module--image" style="--ratio: {{ $ratio }}; --span: {{ $span }}">
+  <img src="{{ $src }}" alt="{{ $alt }}">
+</figure>

@@ -1,0 +1,27 @@
+{{ define "main" }}
+<div class="case">
+  {{ .Content }}
+</div>
+
+{{ $work := where .Site.RegularPages "Type" "work" }}
+{{ $next := index $work 0 }}
+{{ range $i, $p := $work }}
+  {{ if eq $p.Permalink $.Permalink }}
+    {{ if lt (add $i 1) (len $work) }}
+      {{ $next = index $work (add $i 1) }}
+    {{ else }}
+      {{ $next = index $work 0 }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+{{ with $next }}
+<section class="next-project">
+  <a href="{{ .RelPermalink }}">
+    <span class="next-label">View next project</span>
+    {{ with .Params.banner }}<img src="{{ . }}" alt="{{ $.Title }}">{{ end }}
+    <span class="post-title">{{ .Title }}</span>
+    {{ with .Params.category }}<span class="post-meta">{{ . }}</span>{{ end }}
+  </a>
+</section>
+{{ end }}
+{{ end }}

@@ -1,0 +1,5 @@
+{{ $src := .Get "src" }}
+{{ $ratio := .Get "ratio" | default "16/9" }}
+<figure class="module module--video module--file" style="--ratio: {{ $ratio }}">
+  <video src="{{ $src }}" controls playsinline></video>
+</figure>

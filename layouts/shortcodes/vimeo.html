@@ -1,0 +1,5 @@
+{{ $id := .Get "id" }}
+{{ $ratio := .Get "ratio" | default "16/9" }}
+<figure class="module module--video module--vimeo" style="--ratio: {{ $ratio }}">
+  <iframe src="https://player.vimeo.com/video/{{ $id }}" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="{{ .Page.Title }}"></iframe>
+</figure>

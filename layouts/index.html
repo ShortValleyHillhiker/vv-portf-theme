@@ -6,19 +6,17 @@
 
 <section id="work" class="work-listing">
   <h2>Work</h2>
-  <ul>
+  <div class="work-listing-items">
     {{ range $i, $p := $work }}
     {{ if lt $i $workInitial }}
-    <li>
-      <a href="{{ $p.RelPermalink }}">
-        {{ with $p.Params.banner }}<img src="{{ . }}" alt="{{ $p.Title }}">{{ end }}
-        <span class="post-title">{{ $p.Title }}</span>
-        {{ with $p.Params.category }}<span class="post-meta">{{ . }}</span>{{ end }}
-      </a>
-    </li>
+    <a href="{{ $p.RelPermalink }}" class="work-item">
+      {{ with $p.Params.banner }}<img src="{{ . }}" alt="{{ $p.Title }}">{{ end }}
+      <span class="post-title">{{ $p.Title }}</span>
+      {{ with $p.Params.category }}<span class="post-meta">{{ . }}</span>{{ end }}
+    </a>
     {{ end }}
     {{ end }}
-  </ul>
+  </div>
   {{ if gt (len $work) $workInitial }}
   <button class="load-more-btn" data-type="work" data-loaded="{{ $workInitial }}">More work</button>
   {{ end }}
@@ -26,18 +24,16 @@
 
 <section id="writing" class="writing-listing">
   <h2>Writing</h2>
-  <ul>
+  <div class="writing-listing-items">
     {{ range $i, $p := $blog }}
     {{ if lt $i $blogInitial }}
-    <li>
-      <a href="{{ $p.RelPermalink }}">
-        <span class="post-title">{{ $p.Title }}</span>
-        <span class="post-meta">{{ $p.Date.Format "Jan 2006" }}</span>
-      </a>
-    </li>
+    <a href="{{ $p.RelPermalink }}" class="blog-item">
+      <span class="post-title">{{ $p.Title }}</span>
+      <span class="post-meta">{{ $p.Date.Format "Jan 2006" }}</span>
+    </a>
     {{ end }}
     {{ end }}
-  </ul>
+  </div>
   {{ if gt (len $blog) $blogInitial }}
   <button class="load-more-btn" data-type="blog" data-loaded="{{ $blogInitial }}">More writing</button>
   {{ end }}
