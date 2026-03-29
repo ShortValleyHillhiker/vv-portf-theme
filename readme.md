@@ -16,9 +16,10 @@ Dependencies:
 - [Node.js](https://nodejs.org/) (via nvm-windows)
 - Git
 
-Clone with submodules:
+Clone with submodules and install dependencies:
 ```
 git clone --recurse-submodules https://github.com/ShortValleyHillhiker/vv-portf-theme
+npm install
 ```
 
 ## Local Development
@@ -32,8 +33,10 @@ hugo server --buildDrafts
 
 Build the static site:
 ```
-hugo
+npm run build
 ```
+
+This runs Hugo with `cleanDestinationDir` enabled, ensuring the static output only contains pages that currently exist in content. The build script also preserves `public/.git`, which Hugo would otherwise delete.
 
 Commit and push the static output:
 ```
