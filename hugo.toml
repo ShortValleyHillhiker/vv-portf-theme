@@ -3,6 +3,7 @@ locale = 'en-us'
 title = 'Victor Vennerström'
 
 disableKinds = ['taxonomy', 'term']
+cleanDestinationDir = true
 
 [params]
   author = 'Victor Vennerström'
