@@ -1,8 +1,25 @@
-baseURL = 'https://example.org/'
-languageCode = 'en-us'
-title = 'Victor'
+baseURL = 'https://vennerstrom.se/'
+locale = 'en-us'
+title = 'Victor Vennerström'
+
+disableKinds = ['taxonomy', 'term']
+
+[params]
+  author = 'Victor Vennerström'
+  authorURL = 'https://vennerstrom.se'
+  blogInitial = 2
+  workInitial = 2
 
 [permalinks]
-  [permalinks.page]
-    work = '/:slug/'
-    blog = '/:slug/'
+  blog = '/:slug'
+  work = '/:slug'
+
+[outputFormats]
+  [outputFormats.PostsJSON]
+    mediaType = 'application/json'
+    baseName = 'posts'
+    isPlainText = true
+    notAlternative = true
+
+[outputs]
+  home = ['HTML', 'PostsJSON']

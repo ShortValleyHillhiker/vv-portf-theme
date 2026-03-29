@@ -1,30 +1,68 @@
 <!DOCTYPE html>
-<html lang="{{ .Site.LanguageCode }}">
+<html lang="{{ .Site.Language.Locale }}" class="theme-3">
 <head>
   {{ partial "head.html" . }}
 </head>
-<body>
-  {{ partial "nav.html" . }}
-  <main id="swup" class="transition-main">
-    {{ block "main" . }}{{ end }}
-  </main>
-  <script type="module">
-    import Swup from 'https://esm.sh/swup@4';
-    const swup = new Swup();
+<body{{ if .IsHome }} class="is-home"{{ end }}>
+  <div class="ui-frame">
+    <div class="ui-chrome">
+      <div class="nav-logo">
+        <a href="/">{{ .Site.Title }}</a>
+      </div>
+      <div class="cntrls">
+        <button class="cntrl-btn grid-tgl" aria-label="Toggle grid overlay">
+          <span></span>
+          <span style="--bd:1;"></span>
+          <span style="--bd:2;"></span>
+        </button>
+        <div class="cntrl-btn theme-tgl" aria-label="Theme selector">
+          <div class="dots-wrapper">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="integer"></div>
+          </div>
+          <input type="range" min="0" max="6" step="1" value="3">
+        </div>
+      </div>
+    </div>
 
-    function initLoadMore() {
-      document.querySelectorAll('.load-more-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          btn.closest('section').querySelectorAll('.post-hidden').forEach(el => {
-            el.classList.remove('post-hidden');
-          });
-          btn.remove();
-        });
-      });
-    }
+    <nav>
+      <ul>
+        <li class="nav-home" style="--i:1;"><a href="#work">Work</a></li>
+        <li class="nav-home" style="--i:2;"><a href="#writing">Writing</a></li>
+        <li class="nav-home" style="--i:3;"><a href="#contact">Contact</a></li>
+        <li class="nav-page" style="--i:1;"><a href="/">Back</a></li>
+      </ul>
+    </nav>
 
-    initLoadMore();
-    swup.hooks.on('page:view', initLoadMore);
-  </script>
+    <button class="cntrl-btn menu-tgl" aria-label="Toggle menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+
+  <div id="swup">
+    <main>
+      {{ block "main" . }}{{ end }}
+    </main>
+  </div>
+
+  <div class="overlay">
+    <div class="grid-overlay">
+      <div><span></span><span style="--bd:.5"></span></div>
+      <div><span style="--bd:1"></span><span style="--bd:1.5"></span></div>
+      <div><span style="--bd:2"></span><span style="--bd:2.5"></span></div>
+      <div><span style="--bd:3"></span><span style="--bd:3.5"></span></div>
+      <div><span style="--bd:4"></span><span style="--bd:4.5"></span></div>
+    </div>
+  </div>
+
+  {{ $js := resources.Get "js/main.js" | js.Build (dict "minify" true) | fingerprint }}
+  <script type="module" src="{{ $js.RelPermalink }}"></script>
 </body>
 </html>
