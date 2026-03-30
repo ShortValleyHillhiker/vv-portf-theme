@@ -4,51 +4,132 @@
 {{ $workInitial := .Site.Params.workInitial | default 1 }}
 {{ $blogInitial := .Site.Params.blogInitial | default 1 }}
 
+<section id="intro">
+  <div class="s-body">
+    <div class="option-slide">
+      <div class="option-slider">
+        <p class="selected">Art Direction</p>
+        <p>Brand Identity</p>
+        <p>Digital Design</p>
+        <p>Creative Strategy</p>
+      </div>
+    </div>
+    <div class="option-display">
+      <div class="selected">
+        <h1>Art direction for brands that want to stand out.</h1>
+        <p>I help companies define and communicate what makes them distinct — through considered design and clear thinking.</p>
+      </div>
+      <div>
+        <h1>Identity systems built to last.</h1>
+        <p>From naming and visual language to full rollout — brand work that holds together across every touchpoint.</p>
+      </div>
+      <div>
+        <h1>Digital experiences that feel intentional.</h1>
+        <p>Websites and interfaces designed with the same care as print — where structure and aesthetics work together.</p>
+      </div>
+      <div>
+        <h1>Strategy that connects vision to execution.</h1>
+        <p>Helping teams move from a vague idea to a clear direction — and then making that direction real.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="work" class="work-listing">
-  <h2>Work</h2>
-  <div class="work-listing-items">
-    {{ range $i, $p := $work }}
-    {{ if lt $i $workInitial }}
-    <a href="{{ $p.RelPermalink }}" class="work-item">
-      {{ with $p.Params.banner }}<img src="{{ . }}" alt="{{ $p.Title }}">{{ end }}
-      <span class="post-title">{{ $p.Title }}</span>
-      {{ with $p.Params.category }}<span class="post-meta">{{ . }}</span>{{ end }}
-    </a>
-    {{ end }}
+  <div class="s-body">
+    <div class="work-listing-items">
+      {{ range $i, $p := $work }}
+      {{ if lt $i $workInitial }}
+      <a href="{{ $p.RelPermalink }}" class="work-item">
+        {{ with $p.Params.banner }}<img src="{{ . }}" alt="{{ $p.Title }}">{{ end }}
+        <span class="post-title">{{ $p.Title }}</span>
+        {{ with $p.Params.category }}<span class="post-meta">{{ . }}</span>{{ end }}
+      </a>
+      {{ end }}
+      {{ end }}
+    </div>
+    {{ if gt (len $work) $workInitial }}
+    <button class="load-more-btn" data-type="work" data-loaded="{{ $workInitial }}">More work</button>
     {{ end }}
   </div>
-  {{ if gt (len $work) $workInitial }}
-  <button class="load-more-btn" data-type="work" data-loaded="{{ $workInitial }}">More work</button>
-  {{ end }}
 </section>
 
 <section id="writing" class="writing-listing">
-  <h2>Writing</h2>
-  <div class="writing-listing-items">
-    {{ range $i, $p := $blog }}
-    {{ if lt $i $blogInitial }}
-    <a href="{{ $p.RelPermalink }}" class="blog-item">
-      <span class="post-title">{{ $p.Title }}</span>
-      <span class="post-meta">{{ $p.Date.Format "Jan 2006" }}</span>
-    </a>
-    {{ end }}
+  <div class="s-body">
+    <div class="writing-listing-items">
+      {{ range $i, $p := $blog }}
+      {{ if lt $i $blogInitial }}
+      <a href="{{ $p.RelPermalink }}" class="blog-item">
+        <span class="post-title">{{ $p.Title }}</span>
+        <span class="post-meta">{{ $p.Date.Format "Jan 2006" }}</span>
+      </a>
+      {{ end }}
+      {{ end }}
+    </div>
+    {{ if gt (len $blog) $blogInitial }}
+    <button class="load-more-btn" data-type="blog" data-loaded="{{ $blogInitial }}">More writing</button>
     {{ end }}
   </div>
-  {{ if gt (len $blog) $blogInitial }}
-  <button class="load-more-btn" data-type="blog" data-loaded="{{ $blogInitial }}">More writing</button>
-  {{ end }}
 </section>
 
-<section id="contact" class="footer">
-  <div class="content">
-    <div class="start">
-      <h3>Contact</h3>
-      <span>
-        <a href="mailto:victor.vennerstrom@gmail.com">victor.vennerstrom@gmail.com</a>
-        <a href="https://linkedin.com/in/victorvennerstrom" target="_blank" rel="noopener">LinkedIn</a>
-      </span>
+<section id="experience">
+  <div class="s-body">
+    <div class="experience-item">
+      <span class="experience-company">Company</span>
+      <span class="experience-role">Role title</span>
+      <div class="experience-meta">
+        <span>Year – Year</span>
+        <span>Location</span>
+      </div>
+      <p class="experience-desc">Brief description of responsibilities and scope of work.</p>
     </div>
-    <div class="end"></div>
+    <div class="experience-item">
+      <span class="experience-company">Company</span>
+      <span class="experience-role">Role title</span>
+      <div class="experience-meta">
+        <span>Year – Year</span>
+        <span>Location</span>
+      </div>
+      <p class="experience-desc">Brief description of responsibilities and scope of work.</p>
+    </div>
+    <div class="experience-item">
+      <span class="experience-company">Company</span>
+      <span class="experience-role">Role title</span>
+      <div class="experience-meta">
+        <span>Year – Year</span>
+        <span>Location</span>
+      </div>
+      <p class="experience-desc">Brief description of responsibilities and scope of work.</p>
+    </div>
   </div>
 </section>
+
+<section id="references">
+  <div class="s-body">
+    <div class="reference-item">
+      <blockquote>A short testimonial from someone who worked with Victor and found it to be a genuinely good experience worth recommending.</blockquote>
+      <cite>
+        <span class="reference-name">Name Surname</span>
+        <span>Job Title, Company</span>
+      </cite>
+    </div>
+    <div class="reference-item">
+      <blockquote>Another reference quote here, speaking to a specific quality or outcome from working together on a project.</blockquote>
+      <cite>
+        <span class="reference-name">Name Surname</span>
+        <span>Job Title, Company</span>
+      </cite>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="s-body">
+    <div class="contact-links">
+      <a href="mailto:victor.vennerstrom@gmail.com">victor.vennerstrom@gmail.com</a>
+      <a href="https://linkedin.com/in/victorvennerstrom" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+</section>
+
 {{ end }}

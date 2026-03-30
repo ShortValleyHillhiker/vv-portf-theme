@@ -1,0 +1,36 @@
+*, *::before, *::after {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  box-sizing: border-box;
+}
+*::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+* {
+  margin: 0;
+font-feature-settings: var(--font--feature-settings);
+}
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    interpolate-size: allow-keywords;
+  }
+}
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+}
+img, picture, video, canvas, svg, .video-wrapper {
+  display: block;
+  max-width: 100%;
+}
+input, button, textarea, select {
+  font: inherit;
+  border: none;
+}
+small, p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeSpeed;
+}

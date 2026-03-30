@@ -1,0 +1,275 @@
+/* ── BODY / MAIN ─────────────────────────────────────────────────────────── */
+
+body {
+  display: grid;
+  grid-template-columns: var(--g-body);
+  padding-top: var(--gap-top);
+}
+
+main {
+  grid-column: content;
+  display: grid;
+  gap: var(--gap-m);
+  grid-template-columns: var(--gs-4);
+}
+
+main > * {
+  grid-column: 2/-1;
+}
+
+/* ── UI FRAME ────────────────────────────────────────────────────────────── */
+
+.ui-frame {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  grid-template-columns: var(--g-body);
+  pointer-events: none;
+  z-index: 97;
+}
+
+.ui-chrome {
+  grid-column: content;
+  position: relative;
+}
+
+.nav-logo,
+nav,
+.cntrls,
+.menu-tgl {
+  pointer-events: auto;
+}
+
+/* ── NAV LOGO ────────────────────────────────────────────────────────────── */
+
+.nav-logo {
+  position: absolute;
+  top: 1rem;
+  left: 0;
+  padding: 0.75rem;
+  backdrop-filter: blur(4px);
+  transform: translateX(round(-.75rem, 1px));
+  z-index: 98;
+}
+
+.nav-logo a {
+  text-decoration: none;
+  color: var(--c-fg-100);
+}
+
+/* ── NAVIGATION ──────────────────────────────────────────────────────────── */
+
+nav {
+  position: absolute;
+  top: 10rem;
+  left: 0;
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+}
+
+nav li {
+  color: var(--c-fg-60);
+  font-weight: 400;
+}
+
+nav li a {
+  color: inherit;
+  text-decoration: none;
+}
+
+nav li a.active {
+  color: var(--c-fg-100);
+}
+
+/* ── CONTROLS ────────────────────────────────────────────────────────────── */
+
+.cntrls {
+  position: absolute;
+  bottom: 1rem;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  z-index: 98;
+}
+
+.cntrl-btn {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 3rem;
+  min-height: 3rem;
+  padding: 0.75rem;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  background-color: var(--c-bg-40);
+  backdrop-filter: blur(4px);
+  transform: translateX(round(-.5rem, 1px));
+  border: none;
+  cursor: pointer;
+}
+
+/* ── MENU TOGGLE ─────────────────────────────────────────────────────────── */
+
+.menu-tgl {
+  display: none;
+  position: absolute;
+  top: 1rem;
+  right: 0;
+  gap: 0.5rem;
+  flex-direction: column;
+  transition: gap var(--transition);
+  z-index: 98;
+}
+
+.menu-tgl > span {
+  display: block;
+  height: round(0.15rem, 1px);
+  background-color: var(--c-fg-100);
+  width: 100%;
+  transition: transform var(--transition);
+}
+
+.menu-tgl.active { gap: 0; }
+
+.menu-tgl.active > span {
+  transform: rotate(45deg) translateX(0.1rem);
+}
+
+.menu-tgl.active > span:last-child {
+  transform: rotate(-45deg) translateX(0.1rem);
+}
+
+/* ── GRID TOGGLE ─────────────────────────────────────────────────────────── */
+
+.grid-tgl {
+  height: 3rem;
+  justify-content: space-between;
+}
+
+.grid-tgl > span {
+  height: 100%;
+  width: round(0.15rem, 1px);
+  background-color: var(--c-fg-100);
+  transition: height var(--transition);
+}
+
+body:has(.grid-tgl.active) .grid-tgl span { height: 0; }
+
+body:has(.grid-tgl.active) .grid-tgl span:nth-child(odd) {
+  height: 100%;
+  animation: gridBounce var(--timing) 2 alternate;
+  animation-delay: calc(var(--bd) * 0.06s);
+}
+
+@keyframes gridBounce {
+  0%   { height: 100%; }
+  75%  { height: 0%; }
+  100% { height: 0%; }
+}
+
+.grid-tgl:hover,
+.menu-tgl:hover { background-color: var(--c-bg-60); }
+
+.grid-tgl:active,
+.menu-tgl:active { background-color: var(--c-bg-100); }
+
+/* ── THEME SELECTOR ──────────────────────────────────────────────────────── */
+
+.theme-tgl {
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  height: 3rem;
+  transition: height var(--transition);
+}
+
+.theme-tgl.expanded {
+  height: 18rem;
+  touch-action: pan-y;
+  background-color: var(--c-bg-60);
+}
+
+.dots-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 0.75rem 0;
+}
+
+.dot {
+  width: 0.25rem;
+  height: 0.25rem;
+  background-color: var(--c-fg-40);
+}
+
+.dot:nth-child(3n+1) { background-color: var(--c-fg-100); }
+
+.integer {
+  position: absolute;
+  width: 1.33rem;
+  height: 1.33rem;
+  border: round(0.15rem, 1px) solid var(--c-fg-100);
+  top: calc(var(--index, 0) * (100% - 1.5rem) / 6 + 0.75rem);
+  transform: translateY(-50%);
+  transition: top 220ms ease-out;
+  pointer-events: none;
+}
+
+.theme-tgl.expanded .integer {
+  top: calc(0.75rem + var(--index, 0) * (100% - 1.5rem) / 6);
+}
+
+input[type="range"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  writing-mode: vertical-lr;
+  direction: rtl;
+  appearance: none;
+  -webkit-appearance: none;
+  pointer-events: none;
+}
+
+.theme-tgl.expanded input[type="range"] { pointer-events: all; }
+
+body:has(.theme-tgl.expanded) { overflow: hidden; }
+
+/* ── GRID OVERLAY ────────────────────────────────────────────────────────── */
+
+.grid-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: var(--gs-4);
+  gap: var(--gap-m);
+  pointer-events: none;
+  z-index: 99;
+}
+
+.grid-overlay > div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.grid-overlay span {
+  width: 1px;
+  background-color: var(--c-fg-20);
+  height: 0;
+  transition: height var(--transition);
+  transition-delay: calc(var(--bd) * 0.06s);
+}
+
+body:has(.grid-tgl.active) .grid-overlay span { height: 100%; }
+

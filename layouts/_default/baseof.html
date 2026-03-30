@@ -1,14 +1,35 @@
 <!DOCTYPE html>
-<html lang="{{ .Site.Language.Locale }}" class="theme-3">
+<html lang="{{ .Site.Language.Locale }}">
+
 <head>
   {{ partial "head.html" . }}
 </head>
 <body{{ if .IsHome }} class="is-home"{{ end }}>
+
   <div class="ui-frame">
     <div class="ui-chrome">
+
       <div class="nav-logo">
         <a href="/">{{ .Site.Title }}</a>
       </div>
+
+      <nav>
+        <ul>
+          <li class="nav-home" style="--i:1;"><a href="#intro">Intro</a></li>
+          <li class="nav-home" style="--i:2;"><a href="#work">Work</a></li>
+          <li class="nav-home" style="--i:3;"><a href="#writing">Writing</a></li>
+          <li class="nav-home" style="--i:4;"><a href="#experience">Experience</a></li>
+          <li class="nav-home" style="--i:5;"><a href="#references">References</a></li>
+          <li class="nav-home" style="--i:6;"><a href="#contact">Contact</a></li>
+          <li class="nav-page" style="--i:1;"><a href="/">Back</a></li>
+        </ul>
+      </nav>
+
+      <button class="cntrl-btn menu-tgl" aria-label="Toggle menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+      </button>
+
       <div class="cntrls">
         <button class="cntrl-btn grid-tgl" aria-label="Toggle grid overlay">
           <span></span>
@@ -29,40 +50,24 @@
           <input type="range" min="0" max="6" step="1" value="3">
         </div>
       </div>
-    </div>
 
-    <nav>
-      <ul>
-        <li class="nav-home" style="--i:1;"><a href="#work">Work</a></li>
-        <li class="nav-home" style="--i:2;"><a href="#writing">Writing</a></li>
-        <li class="nav-home" style="--i:3;"><a href="#contact">Contact</a></li>
-        <li class="nav-page" style="--i:1;"><a href="/">Back</a></li>
-      </ul>
-    </nav>
+      <div class="grid-overlay">
+        <div><span></span><span style="--bd:.5"></span></div>
+        <div><span style="--bd:1"></span><span style="--bd:1.5"></span></div>
+        <div><span style="--bd:2"></span><span style="--bd:2.5"></span></div>
+        <div><span style="--bd:3"></span><span style="--bd:3.5"></span></div>
+        <div><span style="--bd:4"></span><span style="--bd:4.5"></span></div>
+      </div>
 
-    <button class="cntrl-btn menu-tgl" aria-label="Toggle menu" aria-expanded="false">
-      <span></span>
-      <span></span>
-    </button>
-  </div>
-
-  <div id="swup">
-    <main>
-      {{ block "main" . }}{{ end }}
-    </main>
-  </div>
-
-  <div class="overlay">
-    <div class="grid-overlay">
-      <div><span></span><span style="--bd:.5"></span></div>
-      <div><span style="--bd:1"></span><span style="--bd:1.5"></span></div>
-      <div><span style="--bd:2"></span><span style="--bd:2.5"></span></div>
-      <div><span style="--bd:3"></span><span style="--bd:3.5"></span></div>
-      <div><span style="--bd:4"></span><span style="--bd:4.5"></span></div>
     </div>
   </div>
+
+  <main id="swup">
+    {{ block "main" . }}{{ end }}
+  </main>
 
   {{ $js := resources.Get "js/main.js" | js.Build (dict "minify" true) | fingerprint }}
   <script type="module" src="{{ $js.RelPermalink }}"></script>
 </body>
+
 </html>

@@ -5,7 +5,12 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap">
 {{ partial "seo.html" . }}
 {{ $css := slice
-  (resources.Get "css/variables.css")
+  (resources.Get "css/reset.css")
+  (resources.Get "css/vars.css")
+  (resources.Get "css/type.css")
+  (resources.Get "css/layout.css")
+  (resources.Get "css/sections.css")
   (resources.Get "css/functional.css")
-  | resources.Concat "css/bundle.css" | minify | fingerprint }}
+  (resources.Get "css/queries.css") |
+  resources.Concat "css/bundle.css" | minify | fingerprint }}
 <link rel="stylesheet" href="{{ $css.RelPermalink }}">

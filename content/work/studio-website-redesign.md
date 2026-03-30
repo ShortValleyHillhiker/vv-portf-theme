@@ -10,6 +10,17 @@ draft: false
 index: true
 ---
 
+
+{{< text >}}Copy goes here.{{< /text >}}
+
+
+{{< grid >}}
+  {{< image src="https://picsum.photos/seed/work-konfetti/1200/800" ratio="3/2" span="2" >}}
+  {{< vimeo id="123456789" >}}
+  {{< video src="/images/clip.mp4" ratio="9/16" >}}
+{{< /grid >}}
+
+
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
 
 Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
