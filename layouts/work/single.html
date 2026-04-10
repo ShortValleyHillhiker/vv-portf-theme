@@ -1,7 +1,5 @@
 {{ define "main" }}
-<div class="case">
-  {{ .Content }}
-</div>
+{{ .Content }}
 
 {{ $work := where .Site.RegularPages "Type" "work" }}
 {{ $next := index $work 0 }}
@@ -15,9 +13,9 @@
   {{ end }}
 {{ end }}
 {{ with $next }}
-<section class="next-project">
+<section id="next">
   <a href="{{ .RelPermalink }}">
-    <span class="next-label">View next project</span>
+    <span>View next project</span>
     {{ with .Params.banner }}<img src="{{ . }}" alt="{{ $.Title }}">{{ end }}
     <span class="post-title">{{ .Title }}</span>
     {{ with .Params.category }}<span class="post-meta">{{ . }}</span>{{ end }}

@@ -1,4 +1,4 @@
-{{- $pages := where .Site.RegularPages "Params.draft" "ne" true -}}
+{{- $pages := where .Site.RegularPages "Type" "in" (slice "work" "blog") -}}
 {{- $posts := slice -}}
 {{- range $pages -}}
   {{- $post := dict
@@ -6,6 +6,9 @@
     "description" .Params.description
     "date"        (.Date.Format "2006-01-02")
     "banner"      .Params.banner
+    "shader"      .Params.shader
+    "visualizer"  .Params.visualizer
+    "auto_ripple" .Params.auto_ripple
     "type"        .Type
     "category"    .Params.category
     "url"         .RelPermalink

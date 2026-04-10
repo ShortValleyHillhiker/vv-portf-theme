@@ -1,135 +1,30 @@
 {{ define "main" }}
-{{ $work := where .Site.RegularPages "Type" "work" }}
-{{ $blog := where .Site.RegularPages "Type" "blog" }}
-{{ $workInitial := .Site.Params.workInitial | default 1 }}
-{{ $blogInitial := .Site.Params.blogInitial | default 1 }}
+{{ $all     := where .Site.RegularPages "Type" "in" (slice "work" "blog") }}
+{{ $initial := .Site.Params.postsInitial | default 6 }}
 
-<section id="intro">
-  <div class="s-body">
-    <div class="option-slide">
-      <div class="option-slider">
-        <p class="selected">Art Direction</p>
-        <p>Brand Identity</p>
-        <p>Digital Design</p>
-        <p>Creative Strategy</p>
-      </div>
-    </div>
-    <div class="option-display">
-      <div class="selected">
-        <h1>Art direction for brands that want to stand out.</h1>
-        <p>I help companies define and communicate what makes them distinct — through considered design and clear thinking.</p>
-      </div>
-      <div>
-        <h1>Identity systems built to last.</h1>
-        <p>From naming and visual language to full rollout — brand work that holds together across every touchpoint.</p>
-      </div>
-      <div>
-        <h1>Digital experiences that feel intentional.</h1>
-        <p>Websites and interfaces designed with the same care as print — where structure and aesthetics work together.</p>
-      </div>
-      <div>
-        <h1>Strategy that connects vision to execution.</h1>
-        <p>Helping teams move from a vague idea to a clear direction — and then making that direction real.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="work" class="work-listing">
-  <div class="s-body">
-    <div class="work-listing-items">
-      {{ range $i, $p := $work }}
-      {{ if lt $i $workInitial }}
+<section id="posts">
+  <div class="listing-items">
+    {{ range $i, $p := $all }}
+    {{ if lt $i $initial }}
+      {{ if eq $p.Type "work" }}
       <a href="{{ $p.RelPermalink }}" class="work-item">
-        {{ with $p.Params.banner }}<img src="{{ . }}" alt="{{ $p.Title }}">{{ end }}
+        {{ partial "figure.html" (dict "banner" $p.Params.banner "shader" $p.Params.shader "visualizer" $p.Params.visualizer "auto_ripple" $p.Params.auto_ripple "interaction" "none" "alt" $p.Title) }}
         <span class="post-title">{{ $p.Title }}</span>
         {{ with $p.Params.category }}<span class="post-meta">{{ . }}</span>{{ end }}
       </a>
-      {{ end }}
-      {{ end }}
-    </div>
-    {{ if gt (len $work) $workInitial }}
-    <button class="load-more-btn" data-type="work" data-loaded="{{ $workInitial }}">More work</button>
-    {{ end }}
-  </div>
-</section>
-
-<section id="writing" class="writing-listing">
-  <div class="s-body">
-    <div class="writing-listing-items">
-      {{ range $i, $p := $blog }}
-      {{ if lt $i $blogInitial }}
+      {{ else }}
       <a href="{{ $p.RelPermalink }}" class="blog-item">
+        {{ partial "figure.html" (dict "banner" $p.Params.banner "shader" $p.Params.shader "visualizer" $p.Params.visualizer "auto_ripple" $p.Params.auto_ripple "interaction" "none" "alt" $p.Title) }}
         <span class="post-title">{{ $p.Title }}</span>
         <span class="post-meta">{{ $p.Date.Format "Jan 2006" }}</span>
       </a>
       {{ end }}
-      {{ end }}
-    </div>
-    {{ if gt (len $blog) $blogInitial }}
-    <button class="load-more-btn" data-type="blog" data-loaded="{{ $blogInitial }}">More writing</button>
+    {{ end }}
     {{ end }}
   </div>
-</section>
-
-<section id="experience">
-  <div class="s-body">
-    <div class="experience-item">
-      <span class="experience-company">Company</span>
-      <span class="experience-role">Role title</span>
-      <div class="experience-meta">
-        <span>Year – Year</span>
-        <span>Location</span>
-      </div>
-      <p class="experience-desc">Brief description of responsibilities and scope of work.</p>
-    </div>
-    <div class="experience-item">
-      <span class="experience-company">Company</span>
-      <span class="experience-role">Role title</span>
-      <div class="experience-meta">
-        <span>Year – Year</span>
-        <span>Location</span>
-      </div>
-      <p class="experience-desc">Brief description of responsibilities and scope of work.</p>
-    </div>
-    <div class="experience-item">
-      <span class="experience-company">Company</span>
-      <span class="experience-role">Role title</span>
-      <div class="experience-meta">
-        <span>Year – Year</span>
-        <span>Location</span>
-      </div>
-      <p class="experience-desc">Brief description of responsibilities and scope of work.</p>
-    </div>
-  </div>
-</section>
-
-<section id="references">
-  <div class="s-body">
-    <div class="reference-item">
-      <blockquote>A short testimonial from someone who worked with Victor and found it to be a genuinely good experience worth recommending.</blockquote>
-      <cite>
-        <span class="reference-name">Name Surname</span>
-        <span>Job Title, Company</span>
-      </cite>
-    </div>
-    <div class="reference-item">
-      <blockquote>Another reference quote here, speaking to a specific quality or outcome from working together on a project.</blockquote>
-      <cite>
-        <span class="reference-name">Name Surname</span>
-        <span>Job Title, Company</span>
-      </cite>
-    </div>
-  </div>
-</section>
-
-<section id="contact">
-  <div class="s-body">
-    <div class="contact-links">
-      <a href="mailto:victor.vennerstrom@gmail.com">victor.vennerstrom@gmail.com</a>
-      <a href="https://linkedin.com/in/victorvennerstrom" target="_blank" rel="noopener">LinkedIn</a>
-    </div>
-  </div>
+  {{ if gt (len $all) $initial }}
+  <button class="load-more-btn" data-loaded="{{ $initial }}" data-batch="{{ $initial }}">More</button>
+  {{ end }}
 </section>
 
 {{ end }}

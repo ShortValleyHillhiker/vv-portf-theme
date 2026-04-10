@@ -8,9 +8,6 @@
   (resources.Get "css/reset.css")
   (resources.Get "css/vars.css")
   (resources.Get "css/type.css")
-  (resources.Get "css/layout.css")
-  (resources.Get "css/sections.css")
-  (resources.Get "css/functional.css")
-  (resources.Get "css/queries.css") |
+  (resources.Get "css/functional.css") |
   resources.Concat "css/bundle.css" | minify | fingerprint }}
 <link rel="stylesheet" href="{{ $css.RelPermalink }}">

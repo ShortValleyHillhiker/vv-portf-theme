@@ -8,4 +8,8 @@ type: "work"
 category: "Branding"
 draft: false
 index: true
+
+shader: on          # default: on  — show plain image instead of halftone
+visualizer: off     # default: off — coswave | plasma | checker | interference
+auto_ripple: true 
 ---

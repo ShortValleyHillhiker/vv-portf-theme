@@ -1,0 +1,11 @@
+{{ $p := . }}
+{{ $shaderOff := or (eq $p.shader false) (eq $p.shader "false") (eq $p.shader "off") (eq $p.shader "no") }}
+{{ with $p.banner }}
+<figure{{ with $p.class }} class="{{ . }}"{{ end }}
+  {{- if eq $p.interaction "none" }} data-interaction="none"{{ end }}
+  {{- with $p.visualizer }} data-visualizer="{{ . }}"{{ end }}
+  {{- if $p.auto_ripple }} data-auto-ripple="true"{{ end }}>
+  {{ if not $shaderOff }}<canvas></canvas>{{ end }}
+  <img crossorigin="anonymous" src="{{ . }}" alt="{{ $p.alt }}">
+</figure>
+{{ end }}

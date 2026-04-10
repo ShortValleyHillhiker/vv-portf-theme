@@ -6,9 +6,405 @@ body:not(.is-home) .nav-home { display: none; }
 #swup {
   opacity: 1;
   filter: blur(0);
-  transition: opacity .66s var(--bezier), filter .66s var(--bezier);
+  transition: opacity .33s var(--bezier), filter .33s var(--bezier);
 }
 html.is-animating #swup {
   opacity: 0;
   filter: blur(12px);
+}
+
+/* ── HUD FRAME ───────────────────────────────────────────────────────────── */
+
+.hud {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  grid-template-columns: var(--g-body);
+  pointer-events: none;
+  z-index: 97;
+}
+
+.hud-col {
+  grid-column: content;
+  position: relative;
+}
+
+.hud-logo,
+nav,
+.hud-controls,
+.hud-menu {
+  pointer-events: auto;
+}
+
+/* ── NAVIGATION ──────────────────────────────────────────────────────────── */
+
+nav {
+  position: absolute;
+  top: 10rem;
+  left: 0;
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+}
+
+nav li {
+  color: var(--c-fg-60);
+  font-weight: 400;
+}
+
+nav li a {
+  color: inherit;
+  text-decoration: none;
+}
+
+nav li a.active {
+  color: var(--c-fg-100);
+}
+
+/* ── SHARED BUTTON BASE ──────────────────────────────────────────────────── */
+
+:is(.hud-menu, .hud-grid, .hud-theme) {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 3rem;
+  min-height: 3rem;
+  padding: 0.75rem;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  background-color: var(--c-bg-40);
+  backdrop-filter: blur(4px);
+  transform: translateX(round(-.5rem, 1px));
+  border: none;
+  cursor: pointer;
+}
+:is(.hud-grid, .hud-theme) {
+  transform: translateX(round(-.675rem, -1px));
+}
+:is(.hud-menu) {
+  transform: translateX(round(.675rem, 1px));
+}
+
+/* ── MENU ────────────────────────────────────────────────────────────────── */
+
+.hud-menu {
+  display: none;
+  position: absolute;
+  top: 1rem;
+  right: 0;
+  gap: 0.5rem;
+  flex-direction: column;
+  transition: gap var(--transition);
+  z-index: 98;
+}
+
+.hud-menu > span {
+  display: block;
+  height: round(0.15rem, 1px);
+  background-color: var(--c-fg-100);
+  width: 100%;
+  transition: transform var(--transition);
+}
+
+.hud-menu.active { gap: 0; }
+
+.hud-menu.active > span {
+  transform: rotate(45deg) translateX(0.1rem);
+}
+
+.hud-menu.active > span:last-child {
+  transform: rotate(-45deg) translateX(0.1rem);
+}
+
+/* ── GRID ────────────────────────────────────────────────────────────────── */
+
+.hud-grid {
+  height: 3rem;
+  justify-content: space-between;
+}
+
+.hud-grid > span {
+  height: 100%;
+  width: round(0.15rem, 1px);
+  background-color: var(--c-fg-100);
+  transition: height var(--transition);
+}
+
+body:has(.hud-grid.active) .hud-grid span { height: 0; }
+
+body:has(.hud-grid.active) .hud-grid span:nth-child(odd) {
+  height: 100%;
+  animation: gridBounce var(--timing) 2 alternate;
+  animation-delay: calc(var(--bd) * 0.06s);
+}
+
+@keyframes gridBounce {
+  0%   { height: 100%; }
+  75%  { height: 0%; }
+  100% { height: 0%; }
+}
+
+.hud-grid:hover,
+.hud-menu:hover { background-color: var(--c-bg-60); }
+
+.hud-grid:active,
+.hud-menu:active { background-color: var(--c-bg-100); }
+
+/* ── THEME ───────────────────────────────────────────────────────────────── */
+
+.hud-theme {
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  height: 3rem;
+  transition: height var(--transition);
+}
+
+.hud-theme.expanded {
+  height: 18rem;
+  touch-action: pan-y;
+  background-color: var(--c-bg-60);
+}
+
+.hud-dots {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 0.75rem 0;
+}
+
+.dot {
+  width: 0.25rem;
+  height: 0.25rem;
+  background-color: var(--c-fg-40);
+}
+
+.dot:nth-child(3n+1) { background-color: var(--c-fg-100); }
+
+.integer {
+  position: absolute;
+  width: 1.33rem;
+  height: 1.33rem;
+  border: round(0.15rem, 1px) solid var(--c-fg-100);
+  top: calc(var(--index, 0) * (100% - 1.5rem) / 6 + 0.75rem);
+  transform: translateY(-50%);
+  transition: top 220ms ease-out;
+  pointer-events: none;
+}
+
+.hud-theme.expanded .integer {
+  top: calc(0.75rem + var(--index, 0) * (100% - 1.5rem) / 6);
+}
+
+input[type="range"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  writing-mode: vertical-lr;
+  direction: rtl;
+  appearance: none;
+  -webkit-appearance: none;
+  pointer-events: none;
+}
+
+.hud-theme.expanded input[type="range"] { pointer-events: all; }
+
+body:has(.hud-theme.expanded) { overflow: hidden; }
+
+/* ── CONTROLS ────────────────────────────────────────────────────────────── */
+
+.hud-controls {
+  position: absolute;
+  bottom: 1rem;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  z-index: 98;
+}
+
+/* ── OVERLAY ─────────────────────────────────────────────────────────────── */
+
+.hud-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: var(--gs-4);
+  gap: var(--gap-m);
+  pointer-events: none;
+  z-index: 99;
+}
+
+.hud-overlay > div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.hud-overlay span {
+  width: 1px;
+  background-color: var(--c-fg-20);
+  height: 0;
+  transition: height var(--transition);
+  transition-delay: calc(var(--bd) * 0.06s);
+}
+
+body:has(.hud-grid.active) .hud-overlay span { height: 100%; }
+
+/* ── FIGURE / CANVAS ──────────────────────────────────────────────────────── */
+
+figure {
+  position: relative;
+  aspect-ratio: 3/2;
+  isolation: isolate;  aspect-ratio: 4/5;
+}
+
+figure canvas,
+figure img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity var(--transition);
+}
+
+figure:has(canvas) img { opacity: 0; }
+
+/* Blend mode layers — only active when canvas is present */
+figure:has(canvas)::before,
+figure:has(canvas)::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+figure:not([data-shader="off"])::before {
+  background: var(--c-bg-100);
+  mix-blend-mode: lighten;
+}
+
+figure:not([data-shader="off"])::after {
+  background: var(--c-fg-100);
+  mix-blend-mode: darken;
+  z-index: 2;
+}
+
+/* ── MOBILE ──────────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .hud-menu {
+    display: flex;
+  }
+
+  body:has(.hud-menu.active) {
+    overflow: hidden;
+  }
+
+  nav {
+    z-index: 97;
+  }
+
+  nav ul {
+    position: fixed;
+    inset: 0;
+    background: var(--c-bg-100);
+    display: flex;
+    flex-direction: column;
+    padding: 7rem 1rem;
+    z-index: -1;
+    gap: .35rem;
+    opacity: 0;
+    transition: opacity var(--transition);
+    backdrop-filter: blur(4px);
+    pointer-events: none;
+  }
+
+  body:has(.hud-menu.active) nav ul {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  nav li {
+    font-size: var(--fs-2);
+    transform: translateY(2ch);
+    transition-property: opacity, transform;
+    transition-duration: var(--timing);
+    transition-timing-function: var(--bezier);
+    opacity: 0;
+  }
+
+  body:has(.hud-menu.active) nav li {
+    transform: translateY(0);
+    opacity: 1;
+    transition-delay: calc(.033s * var(--i));
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────── 
+
+  TEMPORARY STYLING :GHOST:
+
+ ──────────────────────────────────────────────────────────────── */
+ body {
+  display: grid;
+  grid-template-columns: var(--g-body);
+ }
+ main {
+  grid-column: content;
+ }
+ .listing-items {
+  display: grid;
+  grid-template-columns: var(--gs-3);
+  gap: 0 var(--gap-m);
+ }
+ canvas {
+    touch-action: pan-y;
+ }
+
+ @media (max-width: 1280px) {
+  :root {
+    --gs-1: 1fr;
+    --gs-2: repeat(2, 1fr);
+    --gs-3: repeat(3, 1fr);
+    --gs-4: repeat(3, 1fr);
+    --fs-ratio: 1.25;
+  }
+  .hud-overlay div:nth-child(n+4) {
+    display: none;
+  }
+}
+@media (max-width: 1024px) {
+  :root {
+    --gs-2: 1fr;
+    --gs-3: 1fr 1fr;
+    --gs-4: repeat(3, 1fr);
+    --fs-ratio: 1.2;
+  }
+}
+@media (max-width: 625px) {
+  :root {
+    --gs-3: 1fr;
+    --gs-4: 1fr 1fr;
+  }
+  .hud-overlay div:nth-child(n+3) {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -6,38 +6,33 @@
 </head>
 <body{{ if .IsHome }} class="is-home"{{ end }}>
 
-  <div class="ui-frame">
-    <div class="ui-chrome">
+  <div class="hud">
+    <div class="hud-col">
 
-      <div class="nav-logo">
+      <div class="hud-logo">
         <a href="/">{{ .Site.Title }}</a>
       </div>
 
       <nav>
         <ul>
           <li class="nav-home" style="--i:1;"><a href="#intro">Intro</a></li>
-          <li class="nav-home" style="--i:2;"><a href="#work">Work</a></li>
-          <li class="nav-home" style="--i:3;"><a href="#writing">Writing</a></li>
-          <li class="nav-home" style="--i:4;"><a href="#experience">Experience</a></li>
-          <li class="nav-home" style="--i:5;"><a href="#references">References</a></li>
-          <li class="nav-home" style="--i:6;"><a href="#contact">Contact</a></li>
-          <li class="nav-page" style="--i:1;"><a href="/">Back</a></li>
+          <li class="nav-page" style="--i:2;"><a href="/">Back</a></li>
         </ul>
       </nav>
 
-      <button class="cntrl-btn menu-tgl" aria-label="Toggle menu" aria-expanded="false">
+      <button class="hud-menu" aria-label="Toggle menu" aria-expanded="false">
         <span></span>
         <span></span>
       </button>
 
-      <div class="cntrls">
-        <button class="cntrl-btn grid-tgl" aria-label="Toggle grid overlay">
+      <div class="hud-controls">
+        <button class="hud-grid" aria-label="Toggle grid overlay">
           <span></span>
           <span style="--bd:1;"></span>
           <span style="--bd:2;"></span>
         </button>
-        <div class="cntrl-btn theme-tgl" aria-label="Theme selector">
-          <div class="dots-wrapper">
+        <div class="hud-theme" aria-label="Theme selector">
+          <div class="hud-dots">
             <div class="dot"></div>
             <div class="dot"></div>
             <div class="dot"></div>
@@ -51,7 +46,7 @@
         </div>
       </div>
 
-      <div class="grid-overlay">
+      <div class="hud-overlay">
         <div><span></span><span style="--bd:.5"></span></div>
         <div><span style="--bd:1"></span><span style="--bd:1.5"></span></div>
         <div><span style="--bd:2"></span><span style="--bd:2.5"></span></div>
@@ -62,7 +57,7 @@
     </div>
   </div>
 
-  <main id="swup">
+  <main id="swup" class="transition-main">
     {{ block "main" . }}{{ end }}
   </main>
 

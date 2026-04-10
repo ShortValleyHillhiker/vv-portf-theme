@@ -1,120 +1,79 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap');
-
 html {
-    font-family:"IBM Plex Sans", system-ui, sans-serif;
-    font-size: max(97.5%, 16px);
-    font-weight: 400;
-    line-height: 1.425;
-    background-color: var(--c-bg-100);
-    color: var(--c-fg-100);
-    -webkit-font-smoothing: antialiased;
-    font-optical-sizing: auto;
-    font-variation-settings:"wdth" 57.5; 
+  font-family: "IBM Plex Sans", system-ui, sans-serif;
+  font-size: max(97.5%, 16px);
+  font-weight: 400;
+  line-height: 1.425;
+  background-color: var(--c-bg-100);
+  color: var(--c-fg-100);
+  -webkit-font-smoothing: antialiased;
+  font-optical-sizing: auto;
+  font-variation-settings: "wdth" 57.5;
 }
 
-h1,
-.fs-8 {
-    font-size: var(--fs-8);
+h1 { font-size: var(--fs-8); }
+h2 { font-size: var(--fs-7); }
+h3 { font-size: var(--fs-6); }
+h4 { font-size: var(--fs-5); }
+h5 { font-size: var(--fs-4); }
+h6 { font-size: var(--fs-3); }
+p  { font-size: var(--fs-2); }
+
+small {
+  font-size: var(--fs-1);
+  font-variation-settings: "wdth" 100;
+  color: var(--c-fg-60);
 }
 
-h2,
-.fs-7 {
-    font-size: var(--fs-7);
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 450;
+  text-wrap: balance;
+  line-height: 1.125;
+  font-variation-settings: "wdth" 87.5;
+  letter-spacing: -0.0333em;
 }
 
-h3,
-.fs-6 {
-    font-size: var(--fs-6);
-}
-
-h4,
-.fs-5 {
-    font-size: var(--fs-5);
-}
-
-h5,
-.fs-4 {
-    font-size: var(--fs-4);
-}
-
-h6,
-.fs-3 {
-    font-size: var(--fs-3);
-}
-
-p,
-.fs-2 {
-    font-size: var(--fs-2);
-}
-
-small,
-.fs-1 {
-    font-size: var(--fs-1);
-    font-variation-settings:"wdth" 100; 
-    color: var(--c-fg-60);
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-.fs-8,
-.fs-7,
-.fs-6,
-.fs-5,
-.fs-4 {
-    font-weight: 450;
-    text-wrap: balance;
-    line-height: 1.125;
-    font-variation-settings:"wdth" 87.5; 
-    letter-spacing: -0.0333em;
-}
-
-p,
-.fs-3 {
-    line-height: 1.25;
-    letter-spacing: 0.0222em;
-    margin-block: 0;
-    text-wrap: pretty;
+p {
+  line-height: 1.25;
+  letter-spacing: 0.0222em;
+  margin-block: 0;
+  text-wrap: pretty;
 }
 
 a {
-    color: inherit;
-    text-decoration: none;
+  color: inherit;
+  text-decoration: none;
 }
 
 p > a {
-    --timing: 125ms;
-    text-decoration: underline;
-    background-image: linear-gradient(var(--c-hl-100), var(--c-hl-100));
-    background-position: 0 100%;
-    background-repeat: no-repeat;
-    background-size: 100% 2px;
-    padding: 0 1px;
-    transition: background-size var(--timing) var(--bezier);
+  --timing: 125ms;
+  text-decoration: underline;
+  background-image: linear-gradient(var(--c-hl-100), var(--c-hl-100));
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 100% 2px;
+  padding: 0 1px;
+  transition: background-size var(--timing) var(--bezier);
+  line-height: inherit;
+  letter-spacing: inherit;
+}
 
-    line-height: inherit;
-    letter-spacing: inherit;
-}
-p > a:hover {
-    background-size: 100% 100%;
-}
+p > a:hover { background-size: 100% 100%; }
+
 a:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: 2px;
-    border-radius: 2px;
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+  border-radius: 2px;
 }
-a:active {
-    opacity: 0.75;
-}
+
+a:active { opacity: 0.75; }
+
 a:target {
-    scroll-margin-top: 2rem;
-    outline: 2px solid currentColor;
+  scroll-margin-top: 2rem;
+  outline: 2px solid currentColor;
 }
+
 button {
-    background-color: var(--c-fg-100);
-    color: var(--c-bg-100);
-    padding: .6rem 1.2rem;
+  background-color: var(--c-fg-100);
+  color: var(--c-bg-100);
+  padding: .6rem 1.2rem;
 }

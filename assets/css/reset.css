@@ -23,6 +23,7 @@ body {
 img, picture, video, canvas, svg, .video-wrapper {
   display: block;
   max-width: 100%;
+  position: relative;
 }
 input, button, textarea, select {
   font: inherit;

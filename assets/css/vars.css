@@ -34,7 +34,7 @@ html {
 
   /* Grid */
   --g-ct: min(1920px, 100% - var(--gap-m) * 2);
-  --g-body: minmax(var(--gap-m), 1fr) [content-start] var(--g-ct) [content-end] minmax(var(--gap-m), 1fr);
+  --g-body: minmax(var(--gap-s), 1fr) [content-start] var(--g-ct) [content-end] minmax(var(--gap-s), 1fr);
   --gap-s: min(0.5rem, 10px);
   --gap-m: min(1rem, 20px);
   --gap-l: min(2rem, 32px);
@@ -53,3 +53,19 @@ html:has(.theme-3) { --c-bg: 238 238 238; --c-fg: 28 28 28; }
 html:has(.theme-4) { --c-bg: 238 238 238; --c-fg: 228 47 37; }
 html:has(.theme-5) { --c-bg: 238 238 238; --c-fg: 37 0 201; }
 html:has(.theme-6) { --c-bg: 28 28 28; --c-fg: 238 238 238; }
+
+html:has(.theme-0,.theme-1,.theme-2) figure:not(:has(canvas)) img {
+  opacity: .85;
+  filter: brightness(.8);
+}
+
+html:has(.theme-3,.theme-4,.theme-5) figure:not([data-shader="off"])::before {
+  mix-blend-mode: darken;
+}
+html:has(.theme-3,.theme-4,.theme-5) figure:not([data-shader="off"])::after {
+  mix-blend-mode: lighten;
+}
+
+html:has(.theme-3,.theme-4,.theme-5) figure:not([data-shader="off"]) canvas {
+  filter: invert();
+}

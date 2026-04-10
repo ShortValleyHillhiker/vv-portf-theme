@@ -8,8 +8,7 @@ cleanDestinationDir = true
 [params]
   author = 'Victor Vennerström'
   authorURL = 'https://vennerstrom.se'
-  blogInitial = 6
-  workInitial = 8
+  postsInitial = 3
 
 [permalinks]
   blog = '/:slug'

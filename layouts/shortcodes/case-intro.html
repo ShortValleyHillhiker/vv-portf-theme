@@ -1,3 +1,19 @@
-<div class="module module--intro">
-  PLACEHOLDER
-</div>
+{{ $src := .Get "src" | default .Page.Params.banner }}
+{{ $alt := .Get "alt" | default .Page.Title }}
+{{ $ratio := .Get "ratio" | default "3/2" }}
+{{ $span := .Get "span" | default "1" }}
+{{ $shader := .Get "shader" | default "on" }}
+{{ $visualizer := .Get "visualizer" | default .Page.Params.visualizer }}
+{{ $autoRipple := .Get "auto_ripple" | default .Page.Params.auto_ripple }}
+{{ with $src }}
+<figure
+  class="module module--intro"
+  style="--ratio: {{ $ratio }}; --span: {{ $span }}"
+  data-shader="{{ $shader }}"
+  {{ with $visualizer }}data-visualizer="{{ . }}"{{ end }}
+  {{ if $autoRipple }}data-auto-ripple="true"{{ end }}
+>
+  <canvas></canvas>
+  <img crossorigin="anonymous" src="{{ . }}" alt="{{ $alt }}">
+</figure>
+{{ end }}

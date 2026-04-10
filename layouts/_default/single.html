@@ -1,28 +1,22 @@
 {{ define "main" }}
 <article>
   {{ with .Params.banner }}
-  <div class="post-banner">
-    <img src="{{ . }}" alt="{{ $.Title }}">
-  </div>
+  <img src="{{ . }}" alt="{{ $.Title }}">
   {{ end }}
 
-  <header class="post-header">
+  <header>
     <h1>{{ .Title }}</h1>
-    {{ with .Params.description }}<p class="lead">{{ . }}</p>{{ end }}
-    <div class="post-meta-row">
+    {{ with .Params.description }}<p>{{ . }}</p>{{ end }}
+    <div>
       {{ if eq .Type "work" }}
-        {{ with .Params.category }}<span class="post-category">{{ . }}</span>{{ end }}
+        {{ with .Params.category }}<span>{{ . }}</span>{{ end }}
       {{ end }}
       <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
     </div>
   </header>
 
-  {{ with .Params.preamble }}
-  <p class="preamble">{{ . }}</p>
-  {{ end }}
+  {{ with .Params.preamble }}<p>{{ . }}</p>{{ end }}
 
-  <div class="content">
-    {{ .Content }}
-  </div>
+  <div>{{ .Content }}</div>
 </article>
 {{ end }}
