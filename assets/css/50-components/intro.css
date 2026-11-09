@@ -1,0 +1,112 @@
+@layer components {
+  /* Home intro: "Tjabba", "Tjena", "Hallå" stack in one by one, hold, then the cover fades.
+     The HUD fades in after it, as the content starts revealing (main.js waits for the cover).
+     Pure CSS: it also plays without JS. main.js only waits for it and lets the visitor skip.
+     State: html[data-intro] = playing (home markup) → skip → done, or "seen" (head script:
+     already played this session, reduced motion, or the failsafe). */
+
+  /* Component tokens: delete this file and they go with it */
+  :root {
+    --intro-words: 3;
+    --intro-in: 420ms;                 /* one word's reveal: grows in, fades in, pushes the others up */
+    --intro-step: var(--intro-in);     /* next word starts when the push has settled */
+    --intro-push-ease: cubic-bezier(0.85, 0, 0.15, 1);  /* steep in-out: the push lunges, then settles */
+    --intro-hold: 500ms;               /* all words on screen before the cover fades */
+    --intro-out: 600ms;                /* the cover leaving (blur + fade), also when skipped */
+    --intro-cover-delay: calc((var(--intro-words) - 1) * var(--intro-step) + var(--intro-in) + var(--intro-hold));
+    --hud-delay: 600ms;                /* after the intro, before the HUD starts: the content leads */
+  }
+
+  .intro {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-intro);
+    display: grid;
+    grid-template-columns: var(--g-body);
+    background-color: var(--c-bg);
+    color: var(--c-fg);
+    touch-action: none;  /* touch screens can't pan the page underneath */
+    /* Leaves like a page does: blur and fade on the page fade-out curve */
+    animation: blur-out var(--intro-out) var(--vt-ease-out-old) var(--intro-cover-delay) forwards;
+  }
+  /* Skipped (click, key, scroll, touch): the same exit, just starting now. A new animation
+     name so it starts over. main.js stops listening once the exit has begun on its own. */
+  html[data-intro="skip"] .intro {
+    animation: blur-out-now var(--intro-out) var(--vt-ease-out-old) forwards;
+  }
+  /* Gone: already played (seen) or finished (done). With reduced motion it never shows. */
+  html:is([data-intro="seen"], [data-intro="done"]) .intro { display: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .intro { display: none; }
+  }
+
+  /* Wait until the page has arrived (after a page transition or prerender), so the
+     intro isn't half over before anyone sees it. Only with JS, which sets .arrived. */
+  html.js:not(.arrived) :is(.intro, .intro_word) { animation-play-state: paused; }
+
+  /* The words sit where the headline will be: same grid, from column 2, same type */
+  .intro_words {
+    grid-column: content;
+    display: grid;
+    grid-template-columns: var(--g-page);
+    column-gap: var(--gutter);
+    align-content: start;
+    padding-block-start: var(--pad-block);
+  }
+  /* A box exactly as tall as the finished stack, with the words pinned to its bottom.
+     Each new word grows from 0 to one line at the bottom and pushes the others up, so
+     "Tjabba" starts on the line where "Hallå" ends. */
+  .intro_stack {
+    grid-column: 2 / -1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    font-size: var(--fs-8);
+    font-weight: 500;
+    line-height: var(--lh-tight);
+    letter-spacing: var(--track-tight);
+    block-size: calc(var(--intro-words) * 1lh);
+  }
+  @media (width <= 51.25em) { .intro_stack { grid-column: 1 / -1; } }
+
+  .intro_word {
+    block-size: 1lh;
+    white-space: nowrap;
+    /* Two parts on one clock: the push (height) on its own steep curve, the fade and blur
+       on the shared reveal curve. backwards, not both: once revealed the word drops its
+       filter entirely. A filter left at blur(0) keeps the word on its own layer, which
+       browsers draw slightly soft. */
+    animation:
+      intro-push var(--intro-in) var(--intro-push-ease) calc(var(--n) * var(--intro-step)) backwards,
+      blur-in var(--intro-in) var(--reveal-ease) calc(var(--n) * var(--intro-step)) backwards;
+  }
+  /* Grows from no height, pushing the words above it up (blur-in/out live in 70-motion) */
+  @keyframes intro-push { from { block-size: 0; } }
+
+  /* While the intro runs (playing or skipping), with JS: no scrolling, and the HUD and nav
+     rail wait. Once it's done, each HUD group blurs in, one step apart, --hud-delay later:
+     logo (or menu button), nav rail, controls. An animation, not a transition, so the
+     groups keep their own transitions and translate. Without JS none of this applies. */
+  .hud-logo     { --hud-i: 0; }
+  .hud-menu     { --hud-i: 0; }   /* phone: takes the logo's slot, the rail isn't shown */
+  .site-nav     { --hud-i: 1; }
+  .hud-controls { --hud-i: 2; }
+
+  html.js:is([data-intro="playing"], [data-intro="skip"]) {
+    overflow: hidden;   /* Lenis is held separately (smooth.js) */
+    & :is(.hud-logo, .hud-menu, .hud-controls) { opacity: 0; }
+    @media (width > 51.25em) { & .site-nav { opacity: 0; } }   /* rail: desktop only */
+  }
+  html.js[data-intro="done"] {
+    & :is(.hud-logo, .hud-menu, .hud-controls) {
+      animation: blur-in var(--reveal-timing) var(--reveal-ease)
+        calc(var(--hud-delay) + var(--hud-i) * var(--reveal-step)) backwards;
+    }
+    @media (width > 51.25em) {
+      & .site-nav {
+        animation: blur-in var(--reveal-timing) var(--reveal-ease)
+          calc(var(--hud-delay) + var(--hud-i) * var(--reveal-step)) backwards;
+      }
+    }
+  }
+}

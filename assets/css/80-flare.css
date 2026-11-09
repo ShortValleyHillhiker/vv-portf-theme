@@ -1,0 +1,37 @@
+/* Flare: the extra polish on top of the system. Optional and self-contained: remove
+   this file and the site works as before. Reads the shared tokens and stays off with
+   reduced motion. */
+@layer motion {
+  /* Component tokens: delete this file and they go with it */
+  :root {
+    --parallax: 0.1;                                   /* images drift ±10% of their height */
+    --parallax-zoom: calc(1 + var(--parallax) * 2.2);  /* zoomed just enough that no edge shows */
+  }
+
+  /* ---------- Image parallax ----------
+     Native scroll-driven animation: images drift inside their frames while the frame
+     crosses the screen, zoomed by --parallax-zoom so no edge ever shows. On the front
+     page's work cards by default; anywhere else (case, blog) only on a figure marked
+     data-parallax. The timeline is named on the frame: a frame with overflow: hidden is
+     its own scroll container, so the image's own view() would never move. */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      :is(.work-post figure, figure[data-parallax]) { view-timeline: --frame; }
+      :is(.work-post figure, figure[data-parallax]) img {
+        --img-zoom: var(--parallax-zoom);
+        animation: parallax linear both;
+        animation-timeline: --frame;
+      }
+      /* The zoomed image overflows its own box; the figure clips it only at the figure's edge,
+         which includes the caption. The caption sits above in the page colour and covers it. */
+      figure[data-parallax] > figcaption {
+        position: relative;
+        background-color: var(--c-bg);
+      }
+      @keyframes parallax {
+        from { translate: 0 calc(var(--parallax) * -100%); }
+        to   { translate: 0 calc(var(--parallax) * 100%); }
+      }
+    }
+  }
+}

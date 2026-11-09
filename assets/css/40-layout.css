@@ -1,0 +1,112 @@
+@layer layout {
+  body {
+    display: grid;
+    grid-template-columns: var(--g-body);
+  }
+
+  main {
+    grid-column: content;
+    display: grid;
+    grid-template-columns: var(--g-page);
+    gap: var(--section-gap) var(--gutter);
+    padding-block: var(--pad-block) var(--pad-end);
+  }
+
+  /* Sections start in column 2: column 1 belongs to the nav rail. They take the page's
+     own columns (subgrid), so everything inside lands on the same grid lines as the
+     grid overlay. Children span the section by default; components place them further. */
+  main > section,
+  main > footer {
+    grid-column: 2 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    align-content: start;
+    row-gap: var(--space-3);
+    min-inline-size: 0;   /* no clip: nothing overflows, and focus rings need to paint past the edge */
+  }
+  main > :is(section, footer) > * { grid-column: 1 / -1; min-inline-size: 0; }
+
+  /* ---------- Break-out ----------
+     A .breakout block starts in column 1, over the nav rail. Its section widens to
+     column 1; the section's other children stay in column 2+ (on tablet the whole
+     section breaks out). Phones have no rail: everything is full width there.
+     One selector for every width, so each override reliably wins. */
+  main > section:has(> .breakout) { grid-column: 1 / -1; }
+  main > section:has(> .breakout) > :not(.breakout) { grid-column: 2 / -1; }
+
+  /* What covers the rail: a backdrop in the page colour behind the block, across the
+     rail column only, fading in over --breakout-fade above and below, so the rail is
+     covered gradually instead of cut off. Desktop: the block; tablet: its section. */
+  /* :where keeps this at zero specificity, so the media blocks below can switch it on */
+  :where(.breakout, main > section:has(> .breakout))::before {
+    content: "";
+    position: absolute;
+    inset-block: calc(var(--breakout-fade) * -1);
+    inset-inline-start: 0;
+    inline-size: var(--rail-cover);
+    z-index: -1;
+    display: none;
+    background: linear-gradient(
+      transparent,
+      var(--c-bg) var(--breakout-fade),
+      var(--c-bg) calc(100% - var(--breakout-fade)),
+      transparent
+    );
+    pointer-events: none;
+  }
+  @media (width > 64em) {
+    .breakout {
+      position: relative;
+      z-index: var(--z-breakout);
+      &::before { display: block; }
+    }
+  }
+  @media (width > 51.25em) and (width <= 64em) {
+    main > section:has(> .breakout) {
+      position: relative;
+      z-index: var(--z-breakout);
+      &::before { display: block; }
+    }
+    main > section:has(> .breakout) > :not(.breakout) { grid-column: 1 / -1; }
+  }
+  @media (width <= 51.25em) {
+    main > :is(section, footer) { grid-column: 1 / -1; }
+    main > section:has(> .breakout) > :not(.breakout) { grid-column: 1 / -1; }
+  }
+
+  main > [id] { scroll-margin-top: var(--hud-top); }
+
+  /* Label + heading stacks at the top of sections */
+  .section-heading,
+  .intro-heading {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  /* Whole-block links: the <a> covers its card (work cards, blog rows, next case) */
+  :is(.work-post, .blog-item, .case-next) {
+    position: relative;
+    isolation: isolate;
+  }
+  :is(.work-post, .blog-item, .case-next) > a {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  /* ---------- Fixed layers: nav rail and HUD ---------- */
+  .layer {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    grid-template-columns: var(--g-body);
+    pointer-events: none;
+  }
+  .layer-nav { z-index: var(--z-nav); }
+  .layer-hud { z-index: var(--z-hud); }
+
+  .layer_rail {
+    grid-column: content;
+    position: relative;
+  }
+}

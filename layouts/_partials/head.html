@@ -1,0 +1,51 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{{ partial "seo.html" . }}
+
+{{/* Blocks render on purpose (stack.md §6.1): theme, grid and intro state must be set
+     before first paint. Inlined and minified at build time. */}}
+{{ $state := `
+document.documentElement.classList.add('js');
+try {
+  const t = localStorage.getItem('tema');
+  document.documentElement.classList.add('theme-' + (/^[0-6]$/.test(t) ? t : 6));
+  if (sessionStorage.getItem('grid')) document.documentElement.setAttribute('data-grid', '');
+  // Home intro (data-intro on the home page's <html>): once per session, counted from ANY
+  // page, so landing on a case first means the home page skips it. sessionStorage is per tab.
+  const root = document.documentElement;
+  if (root.dataset.intro && (sessionStorage.getItem('intro') || matchMedia('(prefers-reduced-motion: reduce)').matches)) root.dataset.intro = 'seen';
+  sessionStorage.setItem('intro', '1');
+} catch { document.documentElement.classList.add('theme-6'); }
+// Arrival: the content comes in through the reveals (main.js), which start on 'arrived':
+// after the old page has faded out (view transition), or once this page has settled.
+{
+  const root = document.documentElement;
+  const arrive = () => { root.classList.add('arrived'); dispatchEvent(new Event('arrived')); };
+  // Failsafe: if main.js never finishes its setup, show the page anyway. main.js cancels this.
+  window.__failsafe = setTimeout(() => {
+    if (root.dataset.intro) root.dataset.intro = 'seen';
+    root.classList.add('arrived', 'failsafe');
+  }, 4000);
+  const settle = () => requestAnimationFrame(() => requestAnimationFrame(arrive));
+  const whenLoaded = () => document.readyState === 'loading' ? addEventListener('DOMContentLoaded', settle) : settle();
+  if ('onpagereveal' in window) addEventListener('pagereveal', e => e.viewTransition ? e.viewTransition.finished.finally(arrive) : whenLoaded());
+  else whenLoaded();
+}` }}
+{{ with resources.FromString "js/head-state.js" $state | minify }}<script>{{ .Content | safeJS }}</script>{{ end }}
+
+<link rel="preload" href="{{ partial "link.html" "/fonts/inter-latin.woff2" }}" as="font" type="font/woff2" crossorigin>
+{{/* Sorted by path, so 00-layers.css (the @layer order) comes first and 50-components/ sits between 40 and 60 */}}
+{{/* hugo --environment readable: the same bundles, not minified (export-readable.sh) */}}
+{{ $minify := ne hugo.Environment "readable" }}
+{{ $css := sort (resources.Match "css/**.css") "Name" | resources.Concat "css/bundle.css" }}
+{{ if $minify }}{{ $css = $css | minify }}{{ end }}
+{{ $css = $css | fingerprint }}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
+<link rel="icon" href="{{ partial "link.html" "/img/favicon.svg" }}" type="image/svg+xml">
+
+{{ $main := resources.Get "js/main.js" | js.Build (dict "minify" $minify) | fingerprint }}
+{{ $smooth := resources.Get "js/smooth.js" | js.Build (dict "minify" $minify "format" "esm") | fingerprint }}
+<script src="{{ $main.RelPermalink }}" defer data-smooth="{{ $smooth.RelPermalink }}"></script>
+<script type="speculationrules">
+  { "prerender": [{ "where": { "href_matches": "/*" }, "eagerness": "moderate" }] }
+</script>

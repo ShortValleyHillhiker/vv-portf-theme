@@ -1,0 +1,43 @@
+<div class="layer layer-nav">
+  <div class="layer_rail">
+    <nav class="site-nav" id="site-nav" aria-label="Sektioner">
+      <ul role="list">
+        {{ range $i, $m := site.Menus.main }}
+        <li class="site-nav_item" style="--i:{{ add $i 1 }}"><a href="{{ $m.URL }}">{{ $m.Name }}</a></li>
+        {{ end }}
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<header class="layer layer-hud">
+  <div class="layer_rail">
+    {{/* No href on the home page: a link to the page you're on would only reload it (and
+         replay the reveals). An <a> without href is a placeholder: same chip, not clickable. */}}
+    <div class="hud-logo"><a class="hud-chip"{{ if not .IsHome }} href="{{ partial "link.html" "/" }}"{{ end }}>{{ site.Title }}</a></div>
+
+    <button class="hud-chip hud-menu" type="button" aria-label="Meny" aria-expanded="false" aria-controls="site-nav" data-needs-js>
+      <span class="hud-menu_bar"></span>
+      <span class="hud-menu_bar"></span>
+    </button>
+
+    <div class="hud-controls" data-needs-js>
+      <button class="hud-chip hud-grid" type="button" aria-label="Visa rutnät" aria-pressed="false">
+        <span class="hud-grid_bar"></span>
+        <span class="hud-grid_bar" style="--bd:1"></span>
+        <span class="hud-grid_bar" style="--bd:2"></span>
+      </button>
+      <div class="hud-chip hud-theme" role="group" aria-label="Tema" tabindex="-1">
+        <div class="hud-theme_scale" aria-hidden="true">
+          {{ range 7 }}<div class="hud-theme_dot"></div>{{ end }}
+          <div class="hud-theme_marker"></div>
+        </div>
+        <input type="range" min="0" max="6" step="1" value="6" aria-label="Tema">
+      </div>
+    </div>
+
+    <div class="grid-overlay" aria-hidden="true">
+      {{ range 5 }}<div class="grid-overlay_col"><span class="grid-overlay_line" style="--bd:{{ . }}"></span><span class="grid-overlay_line" style="--bd:{{ add . 1 }}"></span></div>{{ end }}
+    </div>
+  </div>
+</header>

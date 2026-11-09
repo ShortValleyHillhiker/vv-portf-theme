@@ -1,0 +1,14 @@
+{{/* A real 404 (stack.md open item): broken links show up as broken, and search engines
+     get a real "not found" instead of a redirect home. GitHub Pages serves /404.html. */}}
+{{ define "main" }}
+<section class="case-intro">
+  <div class="section-heading" data-reveal-children>
+    <h1>Sidan finns inte</h1>
+    <small>404</small>
+  </div>
+  <div class="button-row reveal">
+    <a class="primary" href="{{ partial "link.html" "/" }}">Till startsidan</a>
+    <a class="secondary" href="{{ partial "link.html" "/#case" }}">Case</a>
+  </div>
+</section>
+{{ end }}

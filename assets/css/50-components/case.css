@@ -1,0 +1,143 @@
+@layer components {
+  main:has(.case-intro) {
+    row-gap: var(--gap-feature);
+  }
+  /* Cases end with the next case's image running to the bottom edge, under the HUD, on
+     purpose. Pages whose "next" block has no image (blog posts) keep the normal padding. */
+  main:has(.case-next figure) { padding-block-end: 0; }
+
+  .case-content {
+    display: grid;
+    grid-template-columns: var(--g-pair);
+    gap: var(--space-2);
+  }
+  /* Everything spans the full width, except small media side by side on wide screens */
+  .case-content > * { grid-column: 1 / -1; }
+  @media (width > 80em) {
+    .case-content > .case-media:not(.large) { grid-column: auto; }
+  }
+
+  /* ---------- Text blocks ---------- */
+  .case-text,
+  .case-text > :is(.two-col, .three-col) {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .case-text > .two-col   { grid-template-columns: 1fr 1fr; column-gap: var(--gutter); }
+  .case-text > .three-col { grid-template-columns: 1fr 1fr 1fr; column-gap: var(--gutter); }
+  @media (width <= 80em) {
+    .case-text > :is(.two-col, .three-col) { grid-template-columns: 1fr; }
+  }
+
+  .case-content > :is(.case-text, .case-quote) { padding-block: var(--gap-block); }
+  .case-content > .case-text + .case-text { padding-block-start: 0; }
+
+  .case-text.lead > p {
+    font-size: var(--fs-6);
+    max-inline-size: var(--measure-h);
+  }
+
+  /* ---------- Brief: label/value pairs (client, role, year …) ---------- */
+  .case-brief {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(24ch, 100%), 1fr));
+    gap: var(--space-3) var(--gutter);
+  }
+  .case-brief_label {
+    display: block;
+    margin-block-end: var(--space-1);
+  }
+
+  /* ---------- Quote ---------- */
+  .case-quote {
+    display: grid;
+    gap: var(--space-2);
+  }
+  .case-quote blockquote {
+    font-size: var(--fs-7);
+    font-weight: 500;
+    letter-spacing: var(--track-snug);
+  }
+  .case-quote blockquote > p {
+    font-size: inherit;
+    line-height: var(--lh-tight);
+    max-inline-size: var(--measure-h);
+  }
+  .case-quote figcaption { padding-block-start: 0; }
+
+  /* ---------- Plain Markdown content (no shortcodes) ---------- */
+  .case-content > :is(p, h1, h2, h3, h4, h5, h6, ul, ol, blockquote, hr) {
+    margin-block: var(--space-2);
+  }
+  .case-content > :is(p, h1, h2, h3, h4, h5, h6, ul, ol, blockquote, hr):first-child { margin-block-start: 0; }
+  .case-content > :is(ul, ol, blockquote) { max-inline-size: var(--measure); }
+  .case-content > blockquote {
+    padding-inline-start: var(--space-2);
+    border-inline-start: var(--line) solid var(--c-fg-32);
+  }
+  .case-content > hr {
+    inline-size: 100%;
+    block-size: var(--line);
+    border: 0;
+    background-color: var(--c-fg-32);
+  }
+
+  /* ---------- Blog post: same layout, more room around headings and media ---------- */
+  .blog-post > :is(h2, h3, h4) { margin-block-start: var(--space-3); }
+  .blog-post .case-media { margin-block: var(--space-2); }
+
+  /* Row of media. Each item grows by its own ratio (--media-ratio, set by Hugo), so every item in a
+     row ends up the same height whatever its shape. Wraps to one per line on phones. */
+  .case-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .case-grid > * {
+    flex: calc(var(--media-ratio, 1)) 1 0;
+    min-inline-size: 0;
+  }
+  .case-grid > .large { flex-basis: 100%; }
+  @media (width <= 37.5em) { .case-grid > * { flex-basis: 100%; } }
+
+  /* Every case figure carries its media's real ratio as --media-ratio ("1920 / 1080"): from the image
+     file, or from Vimeo for videos (Hugo, at build time). The media keeps that shape. A medium
+     taller than the screen shrinks in width instead of being cropped. A different shape can be
+     forced (ratio="…" in the Markdown); cover then crops to it. */
+  .case-media {
+    position: relative;
+    align-self: start;
+    overflow: hidden;
+  }
+  .case-media :is(img, iframe) {
+    display: block;
+    inline-size: min(100%, var(--media-max) * var(--media-ratio));
+    block-size: auto;
+    aspect-ratio: var(--media-ratio);
+    object-fit: cover;
+    border: 0;
+    background-color: var(--c-fg-10);
+  }
+  .case-media img { scale: var(--img-zoom, 1); }   /* base zoom set by the parallax (80-flare.css) */
+
+  /* ---------- Next case ---------- */
+  .case-next {
+    padding-block-start: var(--space-3);
+    border-block-start: var(--line) solid var(--c-fg-32);
+  }
+  .case-next figure {
+    aspect-ratio: 3 / 1;
+    overflow: hidden;
+  }
+  @media (width <= 80em) { .case-next figure { aspect-ratio: 16 / 9; } }
+  .case-next img {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    transition: scale var(--hover);
+  }
+  .case-next:is(:hover, :focus-within) {
+    & .fs-8 { text-decoration: underline; }
+    & img { scale: 1.03; }
+  }
+}

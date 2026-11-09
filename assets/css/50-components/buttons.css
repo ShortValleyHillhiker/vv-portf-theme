@@ -1,0 +1,59 @@
+@layer components {
+  .primary,
+  .secondary {
+    display: inline-block;
+    padding: var(--space-1) var(--space-2);
+    border: var(--line) solid var(--c-fg);
+    font-size: var(--fs-2);
+    text-align: center;
+  }
+  .primary {
+    background-color: var(--c-fg);
+    color: var(--c-bg);
+  }
+  .primary:hover {
+    background-color: var(--c-fg-80);
+    text-decoration: underline;
+  }
+  .secondary:hover {
+    border-color: var(--c-fg-32);
+    text-decoration: underline;
+  }
+  .primary:active,
+  .secondary:active { text-decoration: none; }
+
+  /* Underlined text button (message tabs) */
+  .tertiary {
+    display: inline-block;
+    flex-shrink: 0;
+    padding-block-end: 0.33em;
+    border-block-end: var(--line) solid var(--c-fg-32);
+    color: var(--c-fg-72);
+    font-size: var(--fs-1);
+  }
+  .tertiary:hover,
+  .tertiary:focus-visible,
+  .tertiary[aria-selected="true"] {
+    border-color: var(--c-fg);
+    color: var(--c-fg);
+  }
+  .tertiary:active {
+    border-color: transparent;
+    color: var(--c-fg);
+  }
+
+  .button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--chip-pad);
+  }
+
+  .load-row {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-block: var(--space-3);
+  }
+  .load-row button[disabled] { opacity: 0.5; cursor: default; }
+}

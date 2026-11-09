@@ -1,0 +1,27 @@
+{{/* A lone Markdown image becomes a case figure (wrapStandAloneImageWithinParagraph = false).
+       ![Alt text](image.webp "Optional caption")
+       {.large loading="eager"}
+     The title becomes the figcaption. .large spans the full width. The figure carries the
+     image's real ratio as --media-ratio (case.css keeps that shape); ratio="16 / 9" forces another
+     shape, cropped to fit. parallax=true turns on the scroll parallax (80-flare.css). */}}
+{{ $res := .Page.Resources.Get .Destination }}
+{{ if not $res }}{{ errorf "%s: image %q not found in the page bundle" .Page.File.Path .Destination }}{{ end }}
+{{ $a := .Attributes }}
+{{ $class := $a.class | default "" }}
+{{ $parallax := and (isset $a "parallax") (ne (string $a.parallax) "false") }}
+{{ if .IsBlock }}
+{{ $ratio := partial "ratio.html" (dict "w" $res.Width "h" $res.Height "force" $a.ratio "page" .Page) }}
+<figure class="case-media{{ with $class }} {{ . }}{{ end }}" style="{{ printf "--media-ratio: %s" $ratio | safeCSS }}"{{ if $parallax }} data-parallax{{ end }}>
+  {{/* Width: full when .large; one of n inside a grid (the grid shortcode stores n); else a
+       lone small figure */}}
+  {{ $n := .Page.Store.Get "gridItems" | default 0 }}
+  {{ $kind := cond (in (split $class " ") "large") "full" (cond (gt $n 0) "grid" "half") }}
+  {{ $r := split $ratio "/" }}
+  {{ $sizes := partial "sizes.html" (dict "kind" $kind "n" $n "zoom" (cond $parallax site.Params.parallaxZoom false) "loading" $a.loading
+       "ratio" (div (float (trim (index $r 0) " ")) (float (trim (index $r 1) " ")))) }}
+  {{ partial "img.html" (dict "res" $res "alt" .PlainText "loading" $a.loading "sizes" $sizes) }}
+  {{ with .Title }}<figcaption>{{ . }}</figcaption>{{ end }}
+</figure>
+{{ else }}
+  {{ partial "img.html" (dict "res" $res "alt" .PlainText "sizes" (partial "sizes.html" (dict "kind" "half"))) }}
+{{ end }}

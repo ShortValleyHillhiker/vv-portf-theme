@@ -1,0 +1,30 @@
+@layer components {
+  /* Column lines that match main's page grid. Toggled by .hud-grid (data-grid on <html>). */
+  /* Columns beyond --page-cols wrap onto zero-height rows, so the overlay always shows
+     exactly the page's columns without its own breakpoints */
+  .grid-overlay {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: var(--g-page);
+    grid-template-rows: 100%;
+    grid-auto-rows: 0;
+    column-gap: var(--gutter);
+    overflow: hidden;
+  }
+  .grid-overlay_col {
+    display: flex;
+    justify-content: space-between;
+  }
+  .grid-overlay_line {
+    inline-size: var(--line);
+    background-color: var(--c-fg-32);
+    /* Grows by scale, not block-size: the line's height follows the screen, and a height
+       change (the iOS toolbar showing or hiding) must not animate. */
+    scale: 1 0;
+    transform-origin: top;
+    /* --bd runs 0 … columns, so the last visible line starts at --grid-sweep */
+    transition: scale var(--transition) calc(var(--bd) / var(--page-cols) * var(--grid-sweep));
+  }
+  html[data-grid] .grid-overlay_line { scale: 1; }
+}

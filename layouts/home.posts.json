@@ -1,0 +1,28 @@
+{{- /* Every case and post, newest first: the same order as the home listings, so
+       "Visa fler" (main.js) continues where the rendered items stop. */ -}}
+{{- $items := slice -}}
+{{- $w := 0 -}}
+{{- range (where site.RegularPages "Section" "in" (slice "work" "blog")).ByDate.Reverse -}}
+  {{- $item := dict
+      "type" .Section
+      "title" .Title
+      "url" .RelPermalink
+      "date" (.Date.Format "2006-01-02")
+      "dateLabel" (.Date | time.Format ":date_medium") -}}
+  {{- if eq .Section "work" -}}
+    {{- $item = merge $item (dict
+        "client" (.Params.client | default "")
+        "category" (.Params.category | default "")
+        "description" .Description
+        "tags" (.Params.tags | default slice)
+        "preload" (partialCached "preload.html" . .RelPermalink)) -}}
+    {{- with .Resources.Get .Params.banner -}}
+      {{- $i := partial "srcset.html" . -}}
+      {{- $sizes := partial "sizes.html" (dict "kind" (cond (modBool $w 2) "card-wide" "card-narrow") "zoom" site.Params.parallaxZoom) -}}
+      {{- $item = merge $item (dict "banner" $i.src "srcset" $i.srcset "sizes" $sizes "width" $i.width "height" $i.height) -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if eq .Section "work" }}{{ $w = add $w 1 }}{{ end -}}
+  {{- $items = $items | append $item -}}
+{{- end -}}
+{{- $items | jsonify (dict "indent" "  ") -}}

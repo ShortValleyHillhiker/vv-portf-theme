@@ -1,0 +1,112 @@
+@layer motion {
+  /* ---------- Page transitions (§5) ---------- */
+  @view-transition { navigation: auto; }
+
+  /* The HUD stays put while the page changes: its parts are captured on their own, not in the
+     fading root. Named one by one, not as .layer-hud: an element with a view-transition-name
+     is a backdrop root, and a chip's backdrop-filter can't see past it, so naming the whole
+     layer left the chips nothing to blur (Safari). */
+  .hud-logo a  { view-transition-name: hud-logo; }
+  .hud-menu    { view-transition-name: hud-menu; }
+  .hud-grid    { view-transition-name: hud-grid; }
+  .hud-theme   { view-transition-name: hud-theme; }
+  .grid-overlay { view-transition-name: hud-overlay; }
+
+  /* The old page fades out. The new one has no fade of its own: it stays hidden until the
+     old one is gone, then appears with its content still hidden, and the reveals bring it in
+     (the head script fires 'arrived' when this transition finishes). */
+  ::view-transition-old(root) { animation: blur-out var(--vt-out) var(--vt-ease-out-old) both; }
+  ::view-transition-new(root) { animation: fade-in 0s var(--vt-out) both; }
+
+  /* The shared motion vocabulary. Everything that comes in blurs and fades in (reveals,
+     intro words, HUD); everything that leaves blurs and fades out (pages, intro cover).
+     blur-out-now is the same exit under another name, so a running exit can restart. */
+  @keyframes blur-in      { from { opacity: 0; filter: blur(var(--reveal-blur)); } }
+  @keyframes blur-out     { to   { opacity: 0; filter: blur(var(--reveal-blur)); visibility: hidden; } }
+  @keyframes blur-out-now { to   { opacity: 0; filter: blur(var(--reveal-blur)); visibility: hidden; } }
+  @keyframes fade-in      { from { opacity: 0; } }
+  @keyframes fade-out     { to   { opacity: 0; } }
+
+  /* ---------- Fallback: no cross-document view transitions (Firefox) ----------
+     main.js fades the live main and the nav rail out before leaving (.vt-leaving), blurred by a
+     veil (below). The new page arrives through the reveals, as above. */
+  /* The rail is a separate layer here (no snapshot), so behind a half-faded break-out it
+     would show through. It leaves first instead: over the first half of the fade, on a
+     decelerating curve, while main is still nearly opaque. */
+  html.vt-leaving .layer-nav { animation: fade-out calc(var(--vt-out) / 2) var(--ease-out) forwards; }
+  /* Fading main makes it a stacking context, which traps the break-outs' z-index inside it
+     and lets the nav rail shine through them, so main itself is lifted to the break-out level. */
+  html.vt-leaving main {
+    position: relative;
+    z-index: var(--z-breakout);
+    animation: fade-out var(--vt-out) var(--vt-ease-out-old) forwards;
+  }
+  /* The blur, so the page leaves the same way as everywhere else (blur-out). Not a filter on
+     main: that blurs the whole page-tall element and drops frames. A screen-sized veil blurs
+     what's behind it instead (backdrop-filter), only the visible part. Under the HUD, which
+     stays sharp, as in the native transition. */
+  html.vt-leaving body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-veil);
+    pointer-events: none;
+    animation: veil-blur var(--vt-out) var(--vt-ease-out-old) forwards;
+  }
+  @keyframes veil-blur {
+    from { backdrop-filter: blur(0); }
+    to   { backdrop-filter: blur(var(--reveal-blur)); }
+  }
+
+  /* ---------- Reveal on load and scroll (main.js adds .revealed with a stagger --i) ----------
+     Targets: .reveal, and every direct child of a [data-reveal-children] container
+     (for Markdown output, which has no classes). A nested container reveals its own
+     children instead of itself. Keep this selector in sync with REVEAL in main.js.
+     Hidden only when JS runs, so content always shows without it. */
+  html.js:not(.failsafe) :is(.reveal, [data-reveal-children] > :not([data-reveal-children])) {
+    opacity: 0;
+    filter: blur(var(--reveal-blur));
+    translate: 0 var(--reveal-shift);
+
+    /* Same motion as the intro words and the HUD: --reveal-timing, --reveal-ease, --reveal-blur.
+       Ends at filter: none (not blur(0)), so text isn't left on a soft-drawn layer. */
+    &.revealed {
+      opacity: 1;
+      filter: none;
+      translate: none;
+      transition-property: opacity, filter, translate;
+      transition-duration: var(--reveal-timing);
+      transition-timing-function: var(--reveal-ease);
+      transition-delay: calc(min(var(--i, 0), var(--reveal-max-steps)) * var(--reveal-step));
+    }
+    &.settled { transition: none; }
+  }
+
+  /* ---------- Smooth scroll ---------- */
+  html:not(.lenis) { scroll-behavior: smooth; }
+
+  /* Lenis CSS (lenis@1.3.27/dist/lenis.css), trimmed to the parts this site uses:
+     no data-lenis-prevent and no autoToggle option */
+  html.lenis, html.lenis body { block-size: auto; }
+  .lenis.lenis-stopped { overflow: clip; }
+  .lenis.lenis-smooth iframe { pointer-events: none; }
+
+  /* ---------- Global guards ---------- */
+  /* No transitions while the window is resized (main.js toggles .is-resizing) */
+  html.is-resizing *,
+  html.is-resizing *::before,
+  html.is-resizing *::after { transition: none !important; }
+
+  /* Reduced motion: one rule for everything, view transitions and smooth scroll included */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after,
+    ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      animation-delay: 0s !important;
+      transition-duration: 0.01ms !important;
+      transition-delay: 0s !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

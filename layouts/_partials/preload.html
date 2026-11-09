@@ -1,0 +1,18 @@
+{{/* What a case shows first, for main.js to warm while a link to it is hovered.
+     Takes a page, returns a dict (JSON-shaped): {"img": [{src, srcset, sizes}, …], "vimeo": "player URL"}.
+     Read from the rendered content, so it is exactly what the page will load. Takes the first
+     site.Params.preloadMedia media items. */}}
+{{ $imgs := slice }}
+{{ $vimeo := "" }}
+{{ range findRE `<(?:img|iframe)\s[^>]+>` .Content (site.Params.preloadMedia | default 3) }}
+  {{ if hasPrefix . "<img" }}
+    {{ $attr := dict }}
+    {{ range findRESubmatch `\s(src|srcset|sizes)="([^"]*)"` . }}{{ $attr = merge $attr (dict (index . 1) (index . 2)) }}{{ end }}
+    {{ $imgs = $imgs | append (dict "src" $attr.src "srcset" ($attr.srcset | default "") "sizes" ($attr.sizes | default "")) }}
+  {{ else if and (not $vimeo) (in . "player.vimeo.com") }}
+    {{ with findRESubmatch `\ssrc="([^"]+)"` . 1 }}{{ $vimeo = index (index . 0) 1 | htmlUnescape }}{{ end }}
+  {{ end }}
+{{ end }}
+{{ $out := dict "img" $imgs }}
+{{ with $vimeo }}{{ $out = merge $out (dict "vimeo" .) }}{{ end }}
+{{ return $out }}

@@ -1,0 +1,35 @@
+@layer components {
+  /* On the page grid: heading and links on the left half, portrait on the right */
+  @media (width > 64em) {
+    .contact > :not(figure) { grid-column: 1 / 3; }
+    .contact > figure { grid-column: 3 / -1; grid-row: 1 / span 2; }
+  }
+
+  /* Portrait blends into the theme colour */
+  .contact > figure {
+    position: relative;
+    aspect-ratio: 1;
+    overflow: hidden;
+    mix-blend-mode: var(--portrait-blend);
+  }
+  .contact > figure::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;   /* above the image, inside the figure's own stacking context */
+    background-color: var(--c-fg);
+    mix-blend-mode: var(--portrait-overlay-blend);
+  }
+  .contact > figure img {
+    position: absolute;
+    inset-block-end: 0;
+  }
+
+  .contact-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    align-content: flex-end;
+    gap: var(--space-2);
+  }
+}

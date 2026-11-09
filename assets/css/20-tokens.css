@@ -1,0 +1,215 @@
+/* Registered so themes can fade between values (§3.4) */
+@property --c-bg { syntax: "<color>"; inherits: true; initial-value: #eeeeee; }
+@property --c-fg { syntax: "<color>"; inherits: true; initial-value: #241ed2; }
+@property --c-hl { syntax: "<color>"; inherits: true; initial-value: #ffdd00; }
+
+@layer tokens {
+  /* ---------- Sizing (§3.3) ----------
+     Every size lands on a whole pixel (at the default 16px text size).
+     Fixed scale first, outside @supports: browsers without progress() (Safari before 26,
+     so every iOS browser on an older iPhone) never see the fluid tokens. Phone first: the
+     same values the fluid scale gives at 375px. */
+  html {
+    --fs-1: 0.8125rem;    /* 13px */
+    --fs-2: 0.875rem;     /* 14px */
+    --fs-3: 1rem;         /* 16px */
+    --fs-4: 1.125rem;     /* 18px */
+    --fs-5: 1.3125rem;    /* 21px */
+    --fs-6: 1.4375rem;    /* 23px */
+    --fs-7: 1.625rem;     /* 26px */
+    --fs-8: 1.8125rem;    /* 29px */
+    --space-1: 0.625rem;  /* 10px */
+    --space-2: 0.875rem;  /* 14px */
+    --space-3: 1.4375rem; /* 23px */
+    --space-5: 2.875rem;  /* 46px */
+  }
+  /* Tablet and up: the desktop scale, tuned against the old site (fs-1 ≈ 15px, gaps 8 / 16 / 32px) */
+  @media (width > 48em) { html {
+    --fs-1: 0.9375rem;    /* 15px */
+    --fs-2: 1.125rem;     /* 18px */
+    --fs-3: 1.375rem;     /* 22px */
+    --fs-4: 1.625rem;     /* 26px */
+    --fs-5: 2rem;         /* 32px */
+    --fs-6: 2.375rem;     /* 38px */
+    --fs-7: 2.8125rem;    /* 45px */
+    --fs-8: 3.375rem;     /* 54px */
+    --space-1: 0.5rem;    /* 8px */
+    --space-2: 1rem;      /* 16px */
+    --space-3: 2rem;      /* 32px */
+    --space-5: 5.5rem;    /* 88px */
+  } }
+
+  @supports (opacity: progress(1px, 0px, 1px)) {
+    html {
+      /* 0 at 375px wide, 1 at 1440px wide */
+      --p: progress(100vw, 375px, 1440px);
+
+      --base:  calc(1rem + 0.14rem * var(--p));       /* body text: 16px → 18.2px */
+      /* ×1.125 phone → ×1.2 from tablet up (the old site switched at 528px) */
+      --type-ratio: calc(1.125 + 0.075 * progress(100vw, 375px, 768px));
+      /* Type only (not space) runs 10% smaller on phones, full size at 1440px.
+         Every size below is rounded to a whole pixel. */
+      --type-base: calc(var(--base) * (0.9 + 0.1 * var(--p)));
+
+      --fs-1: round(var(--type-base) * pow(var(--type-ratio), -1), 1px);
+      --fs-2: round(var(--type-base), 1px);
+      --fs-3: round(var(--type-base) * pow(var(--type-ratio), 1), 1px);
+      --fs-4: round(var(--type-base) * pow(var(--type-ratio), 2), 1px);
+      --fs-5: round(var(--type-base) * pow(var(--type-ratio), 3), 1px);
+      --fs-6: round(var(--type-base) * pow(var(--type-ratio), 4), 1px);
+      --fs-7: round(var(--type-base) * pow(var(--type-ratio), 5), 1px);
+      --fs-8: round(var(--type-base) * pow(var(--type-ratio), 6), 1px);
+
+      /* Same ratio as type (from the full-size base), so the rhythm stays in proportion */
+      --space-1: round(var(--base) * pow(var(--type-ratio), -4), 1px);  /* ≈ 9px  (old gap-s) */
+      --space-2: round(var(--base) * pow(var(--type-ratio), -1), 1px);  /* ≈ 15px (old gap-m) */
+      --space-3: round(var(--base) * pow(var(--type-ratio), 3), 1px);   /* ≈ 32px (old gap-l) */
+      --space-5: round(var(--base) * pow(var(--type-ratio), 9), 1px);
+    }
+  }
+
+  /* ---------- Type, shape, motion ---------- */
+  html {
+    --font-sans: inter, "inter fallback", system-ui, sans-serif;
+    --lh-tight: 1.2;
+    --lh-body: 1.5;
+    --track-tight: -0.02em;
+    --track-snug: -0.012em;
+    --measure-h: 42ch;
+    --measure: 64ch;
+
+    --line: 1px;
+    --line-bold: round(0.15rem, 1px);
+
+    --radius: calc(var(--space-1) * 0.5);
+    --blur: 12px;
+    --blur-chip: 4px;
+
+    /* Keyboard focus: one ring for everything (30-base.css). Always the theme's full
+       foreground, never currentColor, so it shows on filled buttons and faded links alike. */
+    --focus-width: var(--line-bold);
+    --focus-offset: calc(var(--line-bold) * 1.5);
+    --focus-color: var(--c-fg);
+    --focus-room: calc(var(--focus-width) + var(--focus-offset));   /* space the ring needs outside an element */
+
+    --timing: 330ms;
+    --bezier: cubic-bezier(0.9, 0, 0.1, 1);
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --transition: var(--timing) var(--bezier);
+    --hover: 0.4s ease;
+
+    --scroll-duration: 1100ms; /* Lenis anchor jumps (smooth.js) */
+
+    /* Reveals: ONE motion for everything that comes in. Content blocks, intro words and
+       HUD parts all blur and fade in on the same duration, curve and stagger. */
+    --reveal-timing: 460ms;
+    --reveal-ease: cubic-bezier(0.45, 0, 0.55, 1);   /* soft ease-in-out */
+    --reveal-blur: 6px;
+    --reveal-step: 55ms;     /* stagger between items that come in together */
+    --reveal-max-steps: 6;   /* a group never waits more than 6 × step for its last item */
+    --reveal-shift: calc(var(--space-3) * 1.5);       /* content blocks also rise this far */
+
+    /* page transitions: the old page fades out completely; the new page's content
+       then arrives through the reveals */
+    --vt-out: 330ms;
+    --vt-ease-out-old: cubic-bezier(0.85, 0, .66, 1);   /* ease-in: accelerates away */
+
+    --z-nav: 79;
+    --z-breakout: 80;   /* break-out blocks pass over the nav rail */
+    --z-veil: 98;      /* Firefox page-change blur: over the page, under the HUD */
+    --z-hud: 99;
+    --z-skip: 100;
+    --z-intro: 101;
+  }
+
+  /* ---------- Layout (§3.5) ---------- */
+  html {
+    --gutter: var(--space-2);
+    --chip: round(var(--space-2) * 3.2, 1px);
+    --chip-pad: round(var(--space-2) * 0.75, 1px);
+    --chip-nudge: var(--chip-pad);   /* chips shift out so their text aligns with the grid */
+    --hud-top: calc(var(--gutter) + var(--chip)); /* space the top HUD row takes */
+    --breakout-fade: var(--space-5);  /* how gradually a break-out covers the nav rail */
+    /* one page column + gutter; resolve it on a full-width element (40-layout.css) */
+    --rail-cover: calc((100% - (var(--page-cols) - 1) * var(--gutter)) / var(--page-cols) + var(--gutter));
+    --bullet: 0.35em;   /* square list bullets (30-base.css) */
+    --media-max: calc(100svh - var(--hud-top) * 2); /* tallest an image may be: always fits the screen */
+    --pad-block: calc(var(--space-5) * 2.5);
+    /* Page bottom. Desktop: one gutter, so the last content ends level with the HUD
+       slider's bottom. Phones: clear the HUD controls (two chips + their gap) as well. */
+    --pad-end: var(--gutter);
+    --hud-clearance: calc(var(--gutter) * 2 + var(--chip) * 2 + var(--space-2));
+    /* larger steps, built from the scale, so they follow it and the visitor's text size */
+    --section-gap: calc(var(--space-5) * 3.8);  /* between page sections (≈ 360px desktop, 175px phone) */
+    --gap-feature: calc(var(--space-5) * 2.3);  /* around a feature block (≈ 215 / 105px) */
+    --gap-block: var(--space-5);                /* around a text block inside a section (≈ 95 / 45px) */
+
+    --g-ct: min(2400px, 100% - var(--gutter) * 2);
+    --g-body: minmax(var(--gutter), 1fr) [content-start] var(--g-ct) [content-end] minmax(var(--gutter), 1fr);
+    --page-cols: 5;
+    --g-pair: repeat(2, minmax(0, 1fr));
+    --g-content: repeat(4, minmax(0, 1fr));
+    /* minmax(0, 1fr): columns stay equal however wide their content is (sections share
+       these columns through subgrid, so one long word must not widen a column) */
+    --g-page: repeat(var(--page-cols), minmax(0, 1fr));
+    --card-span: 2;          /* page columns per work card: two cards per row on desktop */
+
+    /* Grid overlay: the lines sweep in over the same time at every column count */
+    --grid-sweep: 0.3s;
+  }
+
+  /* Column counts are steps, not blends */
+  @media (width <= 64em)    { html { --page-cols: 3; --card-span: 1; --g-pair: 1fr; --g-content: repeat(2, minmax(0, 1fr)); } }
+  /* From here content spans the full width, under the HUD controls: clear them */
+  @media (width <= 51.25em) { html { --page-cols: 2; --pad-end: var(--hud-clearance); } }
+  @media (width <= 33em)    { html { --page-cols: 1; --g-content: 1fr; } }
+
+  /* ---------- Colour (§3.4) ---------- */
+  html {
+    /* primitives */
+    --grey:   #eeeeee;
+    --ink:    #1c1c1c;
+    --red:    #e42f25;
+    --blue:   #241ed2;
+    --yellow: #ffdd00;
+
+    /* default theme when JS is off (= theme-6) */
+    --c-bg: var(--grey);
+    --c-fg: var(--blue);
+    --c-hl: var(--yellow);
+    --c-favicon: var(--blue);
+
+    /* image tint on work cards, portrait blend in the footer */
+    --c-tint: var(--c-fg);
+    --tint-alpha: 0;
+    --tint-blend: overlay;
+    --portrait-blend: multiply;
+    --portrait-overlay-blend: lighten;
+
+    /* opacity steps of the theme colours; the number is the opacity in % */
+    --c-fg-10: color-mix(in srgb, var(--c-fg) 10%, transparent);
+    --c-fg-32: color-mix(in srgb, var(--c-fg) 32%, transparent);
+    --c-fg-40: color-mix(in srgb, var(--c-fg) 40%, transparent);
+    --c-fg-72: color-mix(in srgb, var(--c-fg) 72%, transparent);
+    --c-fg-80: color-mix(in srgb, var(--c-fg) 80%, transparent);
+    --c-bg-40: color-mix(in srgb, var(--c-bg) 40%, transparent);
+    --c-bg-60: color-mix(in srgb, var(--c-bg) 60%, transparent);
+    --c-bg-80: color-mix(in srgb, var(--c-bg) 80%, transparent);
+    --c-tint-a: color-mix(in srgb, var(--c-tint) calc(var(--tint-alpha) * 100%), transparent);
+
+    transition: --c-bg 0.4s var(--ease-out), --c-fg 0.4s var(--ease-out), --c-hl 0.4s var(--ease-out);
+  }
+
+  html.theme-0 { --c-bg: var(--ink);    --c-fg: var(--grey); --c-favicon: var(--ink); }
+  html.theme-1 { --c-bg: var(--red);    --c-fg: var(--grey); --c-favicon: var(--red);    --c-tint: var(--red);    --tint-alpha: 0.5; }
+  html.theme-2 { --c-bg: var(--blue);   --c-fg: var(--grey); --c-favicon: var(--blue);   --c-tint: var(--blue);   --tint-alpha: 0.5; }
+  html.theme-3 { --c-bg: var(--yellow); --c-fg: var(--ink);  --c-favicon: var(--yellow); --c-tint: var(--yellow); --tint-alpha: 0.7; --tint-blend: soft-light; --c-hl: var(--blue); }
+  html.theme-4 { --c-bg: var(--grey);   --c-fg: var(--ink);  --c-favicon: var(--ink); }
+  html.theme-5 { --c-bg: var(--grey);   --c-fg: var(--red);  --c-favicon: var(--red);    --tint-alpha: 0.35; }
+  html.theme-6 { --c-bg: var(--grey);   --c-fg: var(--blue); --c-favicon: var(--blue);   --tint-alpha: 0.35; }
+
+  html.theme-0, html.theme-1, html.theme-2 {
+    --portrait-blend: screen;
+    --portrait-overlay-blend: darken;
+  }
+}

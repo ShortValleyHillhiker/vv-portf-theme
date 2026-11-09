@@ -1,0 +1,5 @@
+{{/* Larger text that carries the story between images.
+     {{< lead >}}Markdown{{< /lead >}} */}}
+<div class="case-text lead" data-reveal-children>
+  {{ .Inner | .Page.RenderString (dict "display" "block") }}
+</div>

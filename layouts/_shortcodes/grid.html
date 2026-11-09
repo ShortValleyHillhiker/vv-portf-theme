@@ -1,0 +1,15 @@
+{{/* Image grid. One Markdown image per line, separated by blank lines; {.large} spans the row.
+     {{< grid >}}
+     ![Alt](a.webp)
+
+     ![Alt](b.webp)
+     {{< /grid >}} */}}
+{{/* Items sharing a row (all minus .large ones), for the images' sizes (render-image.html) */}}
+{{/* A nested vimeo may arrive as its shortcode or already rendered: count both forms */}}
+{{ $items := add (len (findRE `!\[` .Inner)) (len (findRE `\{\{< vimeo|<iframe` .Inner)) }}
+{{ $large := add (len (findRE `\{\.large` .Inner)) (len (findRE `class="large"|case-media large` .Inner)) }}
+{{ .Page.Store.Set "gridItems" (math.Max 1 (sub $items $large) | int) }}
+<div class="case-grid" data-reveal-children>
+  {{ .Inner | .Page.RenderString (dict "display" "block") }}
+</div>
+{{ .Page.Store.Set "gridItems" 0 }}

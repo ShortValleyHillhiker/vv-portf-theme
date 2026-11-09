@@ -1,0 +1,78 @@
+@layer components {
+  /* On the page grid: each card spans --card-span page columns (two per row on desktop).
+     Every second card drops a step, so the rows read as an editorial stagger. */
+  .work-grid {
+    display: grid;
+    grid-template-columns: subgrid;
+    row-gap: calc(var(--space-3) * 1.5);
+    align-items: start;
+  }
+  @media (width > 33em) {
+    .work-post:nth-child(even) { margin-block-start: var(--gap-block); }
+  }
+
+  /* Desktop, when the grid runs over the nav rail (.breakout): a large card from
+     column 1 across three columns, then a smaller one on the right two, and so on */
+  @media (width > 64em) {
+    .work-grid.breakout > .work-post:nth-child(odd)  { grid-column: 1 / span 3; }
+    .work-grid.breakout > .work-post:nth-child(even) { grid-column: -3 / -1; }
+  }
+
+  .work-post {
+    grid-column: span var(--card-span);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  @media (width <= 64em) { .work-post { justify-content: center; } }
+
+  .work-post figure {
+    position: relative;
+    isolation: isolate;
+    container-type: inline-size;
+    overflow: hidden;
+    margin-block-end: var(--space-1);
+    background-color: var(--c-fg-32);
+    transition: border-radius var(--hover);
+  }
+  /* Theme tint over the image, lifted on hover */
+  .work-post figure::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: var(--c-tint-a);
+    mix-blend-mode: var(--tint-blend);
+    pointer-events: none;
+    transition: opacity var(--hover);
+  }
+  .work-post img {
+    inline-size: 100%;
+    block-size: auto;
+    scale: var(--img-zoom, 1);   /* --img-zoom: base zoom set by the parallax (80-flare.css) */
+    pointer-events: none;
+    transition: scale var(--hover);
+  }
+
+  .work-post_tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+  }
+  .work-post_tags span {
+    padding: calc(var(--space-1) / 2) var(--space-1);
+    border: var(--line) solid var(--c-fg-10);
+    background-color: var(--c-fg-10);
+    font-size: var(--fs-1);
+  }
+
+  /* Hover, keyboard focus, and .near on touch screens (set by main.js) */
+  .work-post:is(:hover, :focus-within, .near) {
+    & > p { text-decoration: underline; }
+    & figure { border-radius: calc(var(--radius) * 2); }
+    & figure::after { opacity: 0; }
+    & img {
+      scale: calc(var(--img-zoom, 1) + 0.05);
+      scale: calc(var(--img-zoom, 1) + 1.5rem / 100cqw); /* same 1.5rem growth at every card size */
+    }
+  }
+}

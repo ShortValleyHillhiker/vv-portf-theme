@@ -1,0 +1,11 @@
+{{/* Text block, optionally in columns. Paragraphs flow into the columns.
+     {{< text title="Två spalter" cols="2" >}}Markdown{{< /text >}}   cols: 2 or 3 */}}
+{{ $body := .Inner | .Page.RenderString (dict "display" "block") }}
+<div class="case-text" data-reveal-children>
+  {{ with .Get "title" }}<h2 class="fs-5">{{ . }}</h2>{{ end }}
+  {{ with .Get "cols" }}
+  <div class="{{ index (dict "2" "two-col" "3" "three-col") (string .) }}">{{ $body }}</div>
+  {{ else }}
+  {{ $body }}
+  {{ end }}
+</div>

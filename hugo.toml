@@ -1,0 +1,87 @@
+baseURL = 'https://vennerstrom.se/'
+locale = 'sv-SE'
+title = 'Victor Vennerström'
+
+disableKinds = ['taxonomy', 'term', 'rss']
+enableRobotsTXT = true
+
+[params]
+  author = 'Victor Vennerström'
+  description = 'Victor Vennerström är art director i Göteborg — koncept, kampanj och form för varumärken som vill säga något.'
+  # Share image (og:image) for pages without a banner. A path in assets/. TODO: a real share image
+  shareImage = 'images/victor.webp'
+  # Items rendered into the page; the rest come from posts.json via "Visa fler"
+  workInitial = 3
+  workBatch = 3
+  blogInitial = 2
+  blogBatch = 2
+  # Media items warmed while a case link is hovered (main.js): the case's first screen
+  preloadMedia = 3
+  # How far parallax images are zoomed, so their srcset sizes can allow for it.
+  # Must match --parallax-zoom in assets/css/80-flare.css (1 + --parallax x 2.2).
+  parallaxZoom = 1.22
+
+[permalinks.page]
+  work = '/:contentbasename/'
+  blog = '/:contentbasename/'
+
+# Structured data (JSON-LD) on the home page. Links and e-mail come from the contact list in
+# content/_index.md, the portrait from contact.portrait.
+[params.person]
+  jobTitle = 'Art Director'
+  worksFor = 'Confetti'
+  knowsAbout = ['Art direction', 'Koncept', 'Kampanj', 'Grafisk design', 'Illustration', 'Motion design', '3D', 'Webbutveckling', 'Varumärkesstrategi']
+  awards = ['2x guld, Gerillaägget 2025', 'Shortlist, Svenska Designpriset 2025']
+
+# posts.json: every case and post, in listing order, for "Visa fler" (main.js)
+[outputFormats.posts]
+  mediaType = 'application/json'
+  baseName = 'posts'
+  isPlainText = true
+  notAlternative = true
+
+[outputs]
+  home = ['html', 'posts']
+
+[markup.goldmark.parser]
+  # A lone image becomes its own block, so the image hook can return a <figure>
+  # instead of a <figure> inside a <p> (stack.md open item)
+  wrapStandAloneImageWithinParagraph = false
+  [markup.goldmark.parser.attribute]
+    block = true
+[markup.goldmark.renderer]
+  # Lets a vimeo shortcode sit inside {{< grid >}} (the grid renders its inside as Markdown).
+  # All content is written by the site owner.
+  unsafe = true
+
+[imaging]
+  resampleFilter = 'Lanczos'
+  [imaging.webp]
+    quality = 82
+
+# Section nav (nav rail on desktop, menu overlay on phones). Anchors on the home page.
+[menus]
+  [[menus.main]]
+    name = 'Intro'
+    url = '/#intro'
+    weight = 1
+  [[menus.main]]
+    name = 'Case'
+    url = '/#case'
+    weight = 2
+  [[menus.main]]
+    name = 'Om mig'
+    url = '/#om-mig'
+    weight = 3
+  [[menus.main]]
+    name = 'Bakgrund'
+    url = '/#bakgrund'
+    weight = 4
+  [[menus.main]]
+    name = 'Lösa skott'
+    url = '/#losa-skott'
+    weight = 5
+  [[menus.main]]
+    name = 'Kontakt'
+    url = '/#kontakt'
+    weight = 6

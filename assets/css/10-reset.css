@@ -1,0 +1,32 @@
+@layer reset {
+  *, *::before, *::after { box-sizing: border-box; }
+  * { margin: 0; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html { interpolate-size: allow-keywords; }
+  }
+
+  /* 100%, not none: stops automatic text inflation but keeps the visitor's own text size */
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  body { min-block-size: 100svh; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; position: relative; }
+
+  img, picture, svg { display: block; max-inline-size: 100%; block-size: auto; }
+  input, button, textarea, select { font: inherit; color: inherit; }
+  h1, h2, h3, h4, h5, h6, p, small { overflow-wrap: break-word; }
+
+  button {
+    padding: 0;
+    border: none;
+    background: none;
+    text-align: inherit;
+    appearance: none;
+    cursor: pointer;
+  }
+
+  /* Scrollbars hidden, as on the old site. Revisit now that Lenis is in (stack.md open items). */
+  * { scrollbar-width: none; }
+  *::-webkit-scrollbar { display: none; }
+
+  /* !important in the first layer beats every later layer */
+  [hidden] { display: none !important; }
+}

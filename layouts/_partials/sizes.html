@@ -1,0 +1,57 @@
+{{/* The sizes attribute for an image: how wide it will be at each viewport width, so the
+     browser fetches the right file from the srcset. Widths follow the page grid (measured, see
+     README): S = the content area right of the nav rail.
+       phone  (≤ 51.25em) 100vw - 32px     tablet (≤ 64em)   66.67vw - 27px
+       desktop            80vw - 31px      wide  (> 2440px)  1916px (content max 2400px)
+     dict:
+       kind:  "full" (full content width) | "grid" (one of n in a row) | "half" (lone small
+              figure: half width above 80em) | "portrait" | "card-wide" | "card-narrow"
+       n:     items in the grid row (kind "grid")
+       zoom:  the image is drawn zoomed by that factor (parallax: site.Params.parallaxZoom),
+              so it needs that many more pixels
+       loading: "eager" leaves out "auto" (only lazy images can use it)
+       ratio: width / height (number). Case media never grows taller than the screen
+              (--media-max = 100svh - 2 x HUD row, about 132px), so the width is capped at
+              (100vh - 132px) x ratio, as in case.css
+     Lazy images without zoom get "auto" first: browsers that support it use the real layout
+     width; others use the list after it. */}}
+{{/* The two layout constants, mirrored from the CSS: the gap between grid items (--gutter,
+     --space-2) and the space the HUD takes above and below media (2 x --hud-top) */}}
+{{ $gap := 16 }}
+{{ $hud := 132 }}
+{{ $S := slice
+  (dict "mq" "(max-width: 51.25em)" "w" "100vw - 32px")
+  (dict "mq" "(max-width: 64em)" "w" "66.67vw - 27px")
+  (dict "mq" "(max-width: 2440px)" "w" "80vw - 31px")
+  (dict "mq" "" "w" "1916px") }}
+{{ $rows := slice }}
+{{ $kind := .kind | default "full" }}
+
+{{ if eq $kind "grid" }}
+  {{ $n := .n | default 2 }}
+  {{ $rows = $rows | append (dict "mq" "(max-width: 37.5em)" "w" "100vw - 32px") }}
+  {{ range $S }}{{ $rows = $rows | append (dict "mq" .mq "w" (printf "(%s - %dpx) / %d" .w (mul $gap (sub $n 1)) $n)) }}{{ end }}
+{{ else if eq $kind "half" }}
+  {{ $rows = slice (index $S 0) (index $S 1) (dict "mq" "(max-width: 80em)" "w" "80vw - 31px") (dict "mq" "(max-width: 2440px)" "w" "(80vw - 47px) / 2") (dict "mq" "" "w" "950px") }}
+{{ else if eq $kind "portrait" }}
+  {{ $rows = slice (index $S 0) (index $S 1) (dict "mq" "(max-width: 2440px)" "w" "40vw - 24px") (dict "mq" "" "w" "950px") }}
+{{ else if hasPrefix $kind "card" }}
+  {{ $rows = slice (dict "mq" "(max-width: 33em)" "w" "100vw - 32px") (dict "mq" "(max-width: 51.25em)" "w" "50vw - 24px") (dict "mq" "(max-width: 64em)" "w" "33.33vw - 21px") }}
+  {{ if eq $kind "card-wide" }}
+    {{ $rows = $rows | append (dict "mq" "(max-width: 2440px)" "w" "60vw - 27px") (dict "mq" "" "w" "1433px") }}
+  {{ else }}
+    {{ $rows = $rows | append (dict "mq" "(max-width: 2440px)" "w" "40vw - 24px") (dict "mq" "" "w" "950px") }}
+  {{ end }}
+{{ else }}
+  {{ $rows = $S }}
+{{ end }}
+
+{{ $out := slice }}
+{{ if and (not .zoom) (ne .loading "eager") }}{{ $out = $out | append "auto" }}{{ end }}
+{{ range $rows }}
+  {{ $w := .w }}
+  {{ with $.ratio }}{{ $w = printf "min(%s, (100vh - %dpx) * %.4f)" $w $hud (float .) }}{{ end }}
+  {{ $w = cond $.zoom (printf "calc((%s) * %v)" $w $.zoom) (printf "calc(%s)" $w) }}
+  {{ $out = $out | append (trim (printf "%s %s" .mq $w) " ") }}
+{{ end }}
+{{ return delimit $out ", " }}

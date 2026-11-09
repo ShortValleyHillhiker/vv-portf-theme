@@ -1,0 +1,51 @@
+{{ define "main" }}
+{{ $isWork := eq .Section "work" }}
+
+<section class="case-intro">
+  <div class="section-heading" data-reveal-children>
+    <h1>{{ .Title }}</h1>
+    <small>{{ if $isWork }}{{ .Params.client }}{{ else }}{{ .Date | time.Format ":date_medium" }}{{ end }}</small>
+  </div>
+  {{ with .Params.intro }}
+  <div class="case-text" data-reveal-children>
+    <p>{{ . | markdownify }}</p>
+  </div>
+  {{ end }}
+</section>
+
+{{/* ul { list-style: none } drops list semantics in Safari/VoiceOver: put them back */}}
+<section class="case-content{{ if not $isWork }} blog-post{{ end }}" data-reveal-children>
+  {{ replace .Content "<ul>" `<ul role="list">` | safeHTML }}
+</section>
+
+{{ if $isWork }}
+  {{/* Next case, newest first, wrapping round to the first */}}
+  {{ $work := (where site.RegularPages "Section" "work").ByDate.Reverse }}
+  {{ $next := index $work 0 }}
+  {{ range $i, $p := $work }}{{ if eq $p $ }}{{ $next = index $work (mod (add $i 1) (len $work)) }}{{ end }}{{ end }}
+  {{ if ne $next . }}
+  {{ with $next }}
+  <section class="case-next reveal">
+    <a href="{{ .RelPermalink }}" aria-label="Nästa case: {{ .Title }}" data-preload="{{ partialCached "preload.html" . .RelPermalink | jsonify }}"></a>
+    <div class="section-heading" data-reveal-children>
+      <p class="fs-8">{{ .Title }}</p>
+      <small>{{ .Params.client }}</small>
+    </div>
+    {{ with .Resources.Get .Params.banner }}
+    <figure class="large">
+      {{ partial "img.html" (dict "res" . "sizes" (partial "sizes.html" (dict "kind" "full"))) }}
+    </figure>
+    {{ end }}
+  </section>
+  {{ end }}
+  {{ end }}
+{{ else }}
+  <section class="case-next reveal">
+    <a href="{{ partial "link.html" "/#losa-skott" }}" aria-label="Tillbaka till Lösa skott"></a>
+    <div class="section-heading" data-reveal-children>
+      <p class="fs-8">Fler lösa skott</p>
+      <small>Tillbaka till listan</small>
+    </div>
+  </section>
+{{ end }}
+{{ end }}

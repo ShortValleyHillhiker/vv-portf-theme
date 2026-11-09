@@ -1,0 +1,123 @@
+{{ define "main" }}
+{{ $p := .Params }}
+{{ $work := (where site.RegularPages "Section" "work").ByDate.Reverse }}
+{{ $blog := (where site.RegularPages "Section" "blog").ByDate.Reverse }}
+{{ $posts := "/posts.json" }}
+{{ with .OutputFormats.Get "posts" }}{{ $posts = .RelPermalink }}{{ end }}
+
+{{ with $p.intro }}
+<section id="intro">
+  <div class="intro-heading" data-reveal-children>
+    <small>{{ .label }}</small>
+    <h1>{{ .heading }}</h1>
+  </div>
+  <div class="button-row reveal">
+    {{ range .buttons }}<a class="{{ .style }}" href="{{ partial "link.html" .href }}">{{ .text }}</a>{{ end }}
+  </div>
+</section>
+{{ end }}
+
+{{ with $p.work }}
+<section id="case">
+  <div class="section-heading" data-reveal-children>
+    <small>{{ .label }}</small>
+    <h2>{{ .heading }}</h2>
+  </div>
+  <div class="work-grid breakout" data-listing="work">
+    {{ range $i, $p := first site.Params.workInitial $work }}{{ partial "work-card.html" (dict "page" $p "i" $i) }}{{ end }}
+  </div>
+  {{ if gt (len $work) site.Params.workInitial }}
+  <div class="load-row reveal" data-needs-js>
+    <button class="secondary" type="button" data-load-more="work" data-src="{{ $posts }}" data-batch="{{ site.Params.workBatch }}" hidden>Visa fler</button>
+  </div>
+  {{ end }}
+</section>
+{{ end }}
+
+{{ with $p.about }}
+<section id="om-mig">
+  <div class="section-heading breakout" data-reveal-children>
+    <h2 class="fs-1">{{ .label }}</h2>
+    <p class="fs-8">{{ .statement }}</p>
+  </div>
+
+  <div class="about-messages" data-reveal-children>
+    <p class="fs-7" id="messages-question">{{ .question }}</p>
+    <div class="messages-input" role="tablist" aria-labelledby="messages-question" data-scroll-x>
+      {{ range $i, $m := .messages }}
+      <button class="tertiary" type="button" role="tab" id="messages-tab-{{ $i }}" aria-controls="messages-panel-{{ $i }}" aria-selected="{{ eq $i 0 }}"{{ if $i }} tabindex="-1"{{ end }}>{{ $m.role }}</button>
+      {{ end }}
+    </div>
+    <div class="messages-output">
+      {{ range $i, $m := .messages }}
+      <p class="fs-7" role="tabpanel" id="messages-panel-{{ $i }}" aria-labelledby="messages-tab-{{ $i }}"{{ if $i }} hidden{{ end }}>
+        {{- if $m.nosnippet }}<span data-nosnippet>{{ $m.text }}</span>{{ else }}{{ $m.text }}{{ end -}}
+      </p>
+      {{ end }}
+    </div>
+  </div>
+
+  <div class="about-content" data-reveal-children>
+    {{ range .copy }}<p class="fs-2">{{ . | markdownify }}</p>{{ end }}
+    <div class="about-acknowledgments">
+      <p class="fs-1">{{ .awards | markdownify }}</p>
+      <p>{{ .awardsNote | markdownify }}</p>
+    </div>
+  </div>
+</section>
+{{ end }}
+
+{{ with $p.background }}
+<section id="bakgrund">
+  <div class="section-heading" data-reveal-children>
+    <h2>{{ .heading }}</h2>
+  </div>
+  <div class="background" data-reveal-children>
+    {{ range .items }}
+    <div class="background-item">
+      <small>{{ .org }}</small>
+      <p class="fs-8">{{ .role }}</p>
+      <p><span>{{ .years }}</span>, {{ .place }}</p>
+      <p>{{ .text }}</p>
+    </div>
+    {{ end }}
+  </div>
+</section>
+{{ end }}
+
+{{ with $p.blog }}
+<section id="losa-skott">
+  <div class="section-heading" data-reveal-children>
+    <h2 class="fs-1">{{ .label }}</h2>
+    <p class="fs-6">{{ .text }}</p>
+  </div>
+  <div class="blog-list" data-listing="blog">
+    {{ range first site.Params.blogInitial $blog }}{{ partial "blog-item.html" . }}{{ end }}
+    {{ if gt (len $blog) site.Params.blogInitial }}
+    <div class="load-row reveal" data-needs-js>
+      <button class="secondary" type="button" data-load-more="blog" data-src="{{ $posts }}" data-batch="{{ site.Params.blogBatch }}" hidden>Visa fler</button>
+    </div>
+    {{ end }}
+  </div>
+</section>
+{{ end }}
+
+{{ with $p.contact }}
+<footer class="contact" id="kontakt" aria-labelledby="kontakt-rubrik">
+  <div class="section-heading" data-reveal-children>
+    <h2 class="fs-1" id="kontakt-rubrik">{{ .label }}</h2>
+    <p class="fs-6">{{ .text }}</p>
+  </div>
+  {{ with resources.Get .portrait.src }}
+  <figure class="reveal">
+    {{ partial "img.html" (dict "res" . "alt" $p.contact.portrait.alt "sizes" (partial "sizes.html" (dict "kind" "portrait"))) }}
+  </figure>
+  {{ end }}
+  <div class="contact-links reveal">
+    {{ range .links }}
+    <a href="{{ partial "link.html" .href }}"{{ if hasPrefix .href "http" }} rel="noopener"{{ end }}{{ with .download }} download="{{ . }}"{{ end }}>{{ .text }}</a>
+    {{ end }}
+  </div>
+</footer>
+{{ end }}
+{{ end }}

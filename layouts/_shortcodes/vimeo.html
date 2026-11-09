@@ -1,0 +1,25 @@
+{{/* Vimeo background video (muted, looping, no controls) as a case figure.
+     Replaces Hugo's built-in vimeo shortcode.
+       {{< vimeo id="1230978350" class="large" >}}
+     The video's ratio comes from Vimeo (oEmbed, fetched at build time and cached by Hugo), so
+     the frame always fits the video. ratio="1 / 1" forces another shape. */}}
+{{ $id := .Get "id" | default (.Get 0) }}
+{{ if not (findRE `^\d+$` $id) }}{{ errorf "%s: vimeo needs a numeric id, got %q" .Page.File.Path $id }}{{ end }}
+
+{{ $w := 16 }}{{ $h := 9 }}
+{{/* width=3840: Vimeo scales its answer to this, so the ratio comes out exact (the default 426 x 240 is rounded) */}}
+{{ $url := printf "https://vimeo.com/api/oembed.json?url=https://vimeo.com/%s&width=3840" $id }}
+{{ with try (resources.GetRemote $url) }}
+  {{ with .Err }}
+    {{ warnf "%s: vimeo %s: could not get its size from Vimeo (%s), using 16 / 9" $.Page.File.Path $id . }}
+  {{ else with .Value }}
+    {{ with . | transform.Unmarshal }}{{ $w = .width }}{{ $h = .height }}{{ end }}
+  {{ end }}
+{{ end }}
+{{ $ratio := partial "ratio.html" (dict "w" $w "h" $h "force" (.Get "ratio") "page" .Page) }}
+
+<figure class="case-media{{ with .Get "class" }} {{ . }}{{ end }}" style="{{ printf "--media-ratio: %s" $ratio | safeCSS }}">
+  <iframe src="https://player.vimeo.com/video/{{ $id }}?background=1&amp;autopause=0"
+          title="{{ .Get "title" | default .Page.Title }}" loading="lazy"
+          allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+</figure>

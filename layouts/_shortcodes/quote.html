@@ -1,0 +1,6 @@
+{{/* Large quote between images.
+     {{< quote cite="Förnamn Efternamn, titel" >}}”Citatet”{{< /quote >}} */}}
+<figure class="case-quote">
+  <blockquote>{{ .Inner | .Page.RenderString (dict "display" "block") }}</blockquote>
+  {{ with .Get "cite" }}<figcaption>{{ . }}</figcaption>{{ end }}
+</figure>

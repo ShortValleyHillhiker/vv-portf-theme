@@ -1,0 +1,75 @@
+{{/* Title, description, robots, canonical, Open Graph, Twitter card and JSON-LD.
+     Ported from the live site's head. Share image: the page's banner (cases), else
+     site.Params.shareImage; resized to 1200 x 630 JPG, which every network accepts.
+     A page leaves search engines (noindex) with  sitemap: { disable: true }  in its front matter,
+     which also drops it from sitemap.xml. A preview build (hugo --environment preview) keeps
+     every page out. */}}
+{{ $is404 := eq .Kind "404" }}
+{{ $title := cond .IsHome site.Title (printf "%s — %s" (cond $is404 "Sidan finns inte" .Title) site.Title) }}
+{{ $description := .Description | default site.Params.description }}
+{{ $robots := cond (or $is404 .Sitemap.Disable (eq hugo.Environment "preview")) "noindex, nofollow" "index, follow" }}
+
+<title>{{ $title }}</title>
+<meta name="description" content="{{ $description }}">
+<meta name="author" content="{{ site.Params.author }}">
+<meta name="robots" content="{{ $robots }}">
+<link rel="canonical" href="{{ .Permalink }}">
+
+{{ $share := "" }}
+{{ with .Params.banner }}{{ with $.Resources.Get . }}{{ $share = .Fill "1200x630 jpg q85 Smart" }}{{ end }}{{ end }}
+{{/* The fallback (the portrait) is shown whole: 630 px tall, centred on white, the photo's own background */}}
+{{ if not $share }}
+  {{ with resources.Get site.Params.shareImage }}
+    {{ $img := .Resize "x630 jpg q85" }}
+    {{ $pad := div (sub 1200 $img.Width) 2 }}
+    {{ $share = $img | images.Filter (images.Padding 0 (sub 1200 $img.Width $pad) 0 $pad "#ffffff") }}
+  {{ end }}
+{{ end }}
+
+<meta property="og:title" content="{{ $title }}">
+<meta property="og:description" content="{{ $description }}">
+<meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:site_name" content="{{ site.Title }}">
+<meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
+<meta property="og:locale" content="{{ replace site.Language.Locale "-" "_" }}">
+{{ with $share }}
+<meta property="og:image" content="{{ .Permalink }}">
+<meta property="og:image:width" content="{{ .Width }}">
+<meta property="og:image:height" content="{{ .Height }}">
+<meta property="og:image:alt" content="{{ $title }}">
+{{ end }}
+{{ if and .IsPage (eq .Section "blog") }}
+<meta property="article:published_time" content="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
+<meta property="article:author" content="{{ site.Params.author }}">
+{{ end }}
+
+<meta name="twitter:card" content="{{ if $share }}summary_large_image{{ else }}summary{{ end }}">
+<meta name="twitter:title" content="{{ $title }}">
+<meta name="twitter:description" content="{{ $description }}">
+{{ with $share }}<meta name="twitter:image" content="{{ .Permalink }}">{{ end }}
+
+{{/* JSON-LD. Built as data and jsonified, so quotes in titles can never break it. */}}
+{{ $author := dict "@type" "Person" "name" site.Params.author }}
+{{ $ld := dict }}
+{{ if .IsHome }}
+  {{ $p := site.Params.person }}
+  {{ $sameAs := slice }}{{ $email := "" }}
+  {{ range .Params.contact.links }}
+    {{ if hasPrefix .href "http" }}{{ $sameAs = $sameAs | append .href }}{{ end }}
+    {{ if hasPrefix .href "mailto:" }}{{ $email = strings.TrimPrefix "mailto:" .href }}{{ end }}
+  {{ end }}
+  {{ $ld = dict "@context" "https://schema.org" "@type" "Person"
+      "name" site.Params.author "url" site.BaseURL "description" $description
+      "jobTitle" $p.jobTitle "worksFor" (dict "@type" "Organization" "name" $p.worksFor)
+      "knowsAbout" $p.knowsAbout "award" $p.awards "sameAs" $sameAs }}
+  {{ with $email }}{{ $ld = merge $ld (dict "email" .) }}{{ end }}
+  {{ with resources.Get .Params.contact.portrait.src }}{{ $ld = merge $ld (dict "image" (.Resize "800x jpg q85").Permalink) }}{{ end }}
+{{ else if and .IsPage (in (slice "work" "blog") .Section) }}
+  {{ $ld = dict "@context" "https://schema.org"
+      "@type" (cond (eq .Section "blog") "BlogPosting" "CreativeWork")
+      "name" .Title "headline" .Title "description" $description
+      "datePublished" (.Date.Format "2006-01-02") "author" $author "url" .Permalink }}
+  {{ with $share }}{{ $ld = merge $ld (dict "image" .Permalink) }}{{ end }}
+  {{ with .Params.category }}{{ $ld = merge $ld (dict "genre" .) }}{{ end }}
+{{ end }}
+{{ with $ld }}<script type="application/ld+json">{{ . | jsonify | safeJS }}</script>{{ end }}

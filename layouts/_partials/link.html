@@ -1,0 +1,6 @@
+{{/* A site-root path ("/", "/#case", "/cv.pdf") made relative to baseURL, so the site also
+     works under a sub-path (a preview at user.github.io/repo/). relURL alone keeps a leading
+     slash at the host root. Anything else (https://…, #id, mailto:) comes back unchanged. */}}
+{{ $u := . }}
+{{ if hasPrefix $u "/" }}{{ $u = strings.TrimPrefix "/" $u | relURL }}{{ end }}
+{{ return $u }}

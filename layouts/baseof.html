@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="{{ site.Language.Locale }}"{{ if .IsHome }} data-intro="playing"{{ end }}>
+<head>
+  {{ partial "head.html" . }}
+</head>
+<body{{ if .IsHome }} class="is-home"{{ end }}>
+  <a class="skip-link" href="#main">Hoppa till innehåll</a>
+  {{ if .IsHome }}{{ partial "intro.html" . }}{{ end }}
+  {{ partial "hud.html" . }}
+  <main id="main" tabindex="-1">
+    {{ block "main" . }}{{ end }}
+  </main>
+</body>
+</html>

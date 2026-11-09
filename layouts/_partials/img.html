@@ -1,0 +1,7 @@
+{{/* Responsive <img> from an image resource. The shape comes from width/height, or from the
+     figure's --media-ratio in a case (render-image.html).
+     dict: res (resource), alt, sizes, loading ("lazy") */}}
+{{ $i := partial "srcset.html" .res }}
+<img src="{{ $i.src }}"
+     {{- with $i.srcset }} srcset="{{ . }}" sizes="{{ $.sizes | default "100vw" }}"{{ end }}
+     width="{{ $i.width }}" height="{{ $i.height }}" alt="{{ .alt }}" loading="{{ .loading | default "lazy" }}" decoding="async">

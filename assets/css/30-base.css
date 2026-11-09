@@ -1,0 +1,118 @@
+@font-face {
+  font-family: inter;
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url(../fonts/inter-latin.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: inter;
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url(../fonts/inter-latin-ext.woff2) format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Metric-matched fallback, so the swap to Inter doesn't shift the layout */
+@font-face {
+  font-family: "inter fallback";
+  src: local("Arial"), local("Helvetica"), local("Liberation Sans");
+  ascent-override: 88.42%;
+  descent-override: 22.02%;
+  line-gap-override: 0%;
+  size-adjust: 109.56%;
+}
+
+@layer base {
+  html {
+    background: var(--c-bg);
+    color: var(--c-fg);
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-optical-sizing: auto;
+    line-height: 1.45;
+  }
+
+  /* ---------- Type scale ---------- */
+  h1, .fs-8 { font-size: var(--fs-8); }
+  h2, .fs-7 { font-size: var(--fs-7); }
+  h3, .fs-6 { font-size: var(--fs-6); }
+  h4, .fs-5 { font-size: var(--fs-5); }
+  h5, .fs-4 { font-size: var(--fs-4); }
+  h6, .fs-3 { font-size: var(--fs-3); }
+  p,  .fs-2 { font-size: var(--fs-2); }
+  small, .fs-1 { font-size: var(--fs-1); color: var(--c-fg-72); }
+
+  /* Headings: display sizes are tight, text sizes keep body leading */
+  h1, h2, h3, h4, h5, .fs-8, .fs-7, .fs-6, .fs-5 {
+    font-weight: 500;
+    text-wrap: balance;
+    max-inline-size: var(--measure-h);
+  }
+  h1, h2, h3, .fs-8, .fs-7, .fs-6 {
+    line-height: var(--lh-tight);
+    letter-spacing: var(--track-tight);
+  }
+  h4, h5, h6, .fs-5, .fs-4, .fs-3 {
+    line-height: var(--lh-body);
+    letter-spacing: var(--track-snug);
+  }
+
+  p {
+    line-height: var(--lh-body);
+    text-wrap: pretty;
+    max-inline-size: var(--measure);
+  }
+  small { line-height: 1.4; }
+  figcaption {
+    padding-block-start: var(--space-1);
+    font-size: var(--fs-1);
+    color: var(--c-fg-72);
+  }
+  strong { font-weight: 600; }
+
+  ul, ol { padding-inline-start: 1.2em; }
+  /* Square bullets as an empty ::before box, not ::marker: generated boxes without text
+     can't be selected or copied. Not in the nav, which has no bullets.
+     list-style: none makes Safari/VoiceOver drop list semantics: every <ul> carries
+     role="list" in the markup (templates, and page.html for Markdown content). */
+  ul { list-style: none; }
+  :where(ul:not(nav ul)) > li { position: relative; }
+  :where(ul:not(nav ul)) > li::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: -1em;
+    inset-block-start: calc((1lh - var(--bullet)) / 2);
+    inline-size: var(--bullet);
+    block-size: var(--bullet);
+    background-color: var(--c-fg-72);
+  }
+  li { font-size: var(--fs-2); line-height: var(--lh-body); }
+  li + li { margin-block-start: 0.35em; }
+
+  /* ---------- Links ---------- */
+  a { color: inherit; text-decoration: none; }
+  a[href]:active { opacity: 0.75; }   /* real links only: an <a> without href (the home logo) is a placeholder */
+
+  p > a {
+    padding: 0 1px;
+    background-image: linear-gradient(var(--c-hl), var(--c-hl));
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    background-size: 100% var(--line-bold);
+  }
+  small > a { color: var(--c-fg); text-decoration: underline; }
+  small > a:hover { text-decoration: none; }
+
+  /* The one focus ring (tokens: --focus-*). The theme slider moves it onto its chip. */
+  :focus-visible {
+    outline: var(--focus-width) solid var(--focus-color);
+    outline-offset: var(--focus-offset);
+  }
+
+  ::selection { background: var(--c-fg); color: var(--c-bg); }
+}

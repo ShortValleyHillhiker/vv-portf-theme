@@ -1,0 +1,106 @@
+@layer components {
+  /* ---------- Messages ("tell me what you do") ---------- */
+  .about-messages {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding-block: var(--gap-feature) calc(var(--gap-feature) / 2);
+  }
+  .about-messages > p { color: var(--c-fg-72); }
+
+  .messages-input {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: var(--space-3);
+    overflow-x: auto;
+    user-select: none;
+    /* A scroll container clips its contents: padding gives the tabs' focus rings room inside it,
+       and the matching negative margin keeps the strip where it was */
+    padding: var(--focus-room);
+    padding-block-end: max(var(--space-1), var(--focus-room));   /* also room for the underline */
+    margin: calc(var(--space-3) - var(--focus-room)) calc(var(--focus-room) * -1) 0;
+
+    /* No scrollbar (hidden site-wide, 10-reset.css). Instead the strip fades out at an edge
+       where more tabs are hidden: a mask (so it shows whatever is behind, in every theme),
+       driven by the strip's own scroll position. At the start only the end fades, at the
+       end only the start, in between both. Not scrollable, or no scroll timelines: no fade. */
+    --edge-fade: var(--space-5);
+    mask-image: linear-gradient(to right,
+      transparent, #000 var(--fade-start),
+      #000 calc(100% - var(--fade-end)), transparent);
+    animation: scroll-edges linear both;
+    animation-timeline: scroll(self inline);
+  }
+  @property --fade-start { syntax: "<length>"; inherits: false; initial-value: 0px; }
+  @property --fade-end   { syntax: "<length>"; inherits: false; initial-value: 0px; }
+  @keyframes scroll-edges {
+    from { --fade-start: 0px;              --fade-end: var(--edge-fade); }
+    10%  { --fade-start: var(--edge-fade); }
+    90%  {                                 --fade-end: var(--edge-fade); }
+    to   { --fade-start: var(--edge-fade); --fade-end: 0px; }
+  }
+
+  /* ---------- About text ---------- */
+  .about-content {
+    display: grid;
+    grid-template-columns: var(--g-content);
+    gap: var(--space-3) var(--gutter);
+  }
+  .about-content > * { grid-column: 2 / -2; }
+  /* Tablet: the section breaks out to column 1 (40-layout.css); the long copy keeps its indent */
+  @media (width > 51.25em) and (width <= 64em) {
+    #om-mig > .about-content { grid-column: 2 / -1; }
+  }
+  @media (width <= 64em) { .about-content > * { grid-column: 1 / -1; } }
+
+  .about-acknowledgments {
+    display: grid;
+    gap: var(--space-1);
+  }
+
+  /* ---------- Background (CV) ---------- */
+  .background {
+    display: grid;
+    gap: calc(var(--space-3) * 1.5);
+    margin-block-start: var(--gap-block);
+  }
+  .background-item {
+    display: grid;
+    gap: var(--space-1);
+  }
+  .background-item > p { color: var(--c-fg-72); }
+  .background-item > p span { color: var(--c-fg); }
+  .background-item > .fs-8 {
+    margin-block-end: var(--space-1);
+    color: var(--c-fg);
+  }
+
+  /* ---------- Blog list ---------- */
+  .blog-list {
+    display: grid;
+    grid-template-columns: var(--g-content);
+    column-gap: var(--gutter);
+    margin-block-start: var(--gap-block);
+  }
+  .blog-item,
+  .blog-list .load-row { grid-column: 1 / 4; }
+  @media (width <= 64em) {
+    .blog-item, .blog-list .load-row { grid-column: 1 / -1; }
+  }
+
+  .blog-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-3);
+    padding-block: 1em;
+    border-block-end: var(--line) solid var(--c-fg-32);
+  }
+  .blog-item small { white-space: nowrap; }
+  .blog-item:is(:hover, :focus-within) {
+    border-block-end: var(--line-bold) solid var(--c-fg);
+    & > small { color: var(--c-fg); }
+  }
+  /* Last item has no line, unless hovered or focused */
+  .blog-item:last-of-type:not(:hover, :focus-within) { border-color: transparent; }
+}

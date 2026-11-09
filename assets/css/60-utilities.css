@@ -1,0 +1,17 @@
+@layer utilities {
+  .skip-link {
+    position: absolute;
+    inset: var(--gutter) auto auto var(--gutter);
+    z-index: var(--z-skip);
+    padding: var(--chip-pad) var(--gutter);
+    background-color: var(--c-fg);
+    color: var(--c-bg);
+    font-size: var(--fs-1);
+    translate: 0 -200%;
+    transition: translate var(--transition);
+  }
+  .skip-link:focus-visible { translate: none; }
+
+  /* Controls that only work with JS */
+  html:not(.js) [data-needs-js] { display: none; }
+}

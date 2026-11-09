@@ -1,0 +1,88 @@
+@layer components {
+  /* Desktop: a fixed rail on the left, home page only */
+  .site-nav {
+    position: absolute;
+    inset: var(--pad-block) auto auto 0;
+    pointer-events: auto;
+  }
+  body:not(.is-home) .site-nav { display: none; }
+
+  /* Page arrival: the rail comes in with the content. It's part of the page snapshot, so it
+     leaves with the old page; here it waits for .arrived (head script: after the page
+     transition, the same moment the reveals start) and then blurs in on the reveal timing.
+     Desktop only: on phones the nav is the menu overlay. */
+  @media (width > 51.25em) {
+    .site-nav {
+      transition:
+        opacity var(--reveal-timing) var(--reveal-ease),
+        filter var(--reveal-timing) var(--reveal-ease);
+    }
+    html.js:not(.arrived) .site-nav {
+      opacity: 0;
+      filter: blur(var(--reveal-blur));
+    }
+  }
+
+  .site-nav ul { padding: 0; }
+  .site-nav li + li { margin: 0; }
+
+  .site-nav_item {
+    font-size: var(--fs-1);
+    line-height: 1.9;
+    color: var(--c-fg-72);
+  }
+  .site-nav_item a { display: block; }
+  .site-nav_item:is(:hover, :has(a[aria-current])) {
+    color: var(--c-fg);
+    text-decoration: underline;
+  }
+
+  /* ---------- Phone: the list becomes a full-screen overlay under the HUD ----------
+     Open state is the menu button's aria-expanded (set by main.js). Opacity + visibility
+     instead of display, so it fades both ways in every browser. */
+  @media (width <= 51.25em) {
+    .site-nav { position: static; }
+
+    .site-nav ul {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      padding: var(--hud-top) var(--gutter);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      background-color: var(--c-bg-80);
+      backdrop-filter: blur(var(--blur));
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity var(--transition), visibility 0s linear var(--timing);
+    }
+
+    .site-nav_item {
+      font-size: var(--fs-5);
+      line-height: 1.3;
+      opacity: 0;
+      translate: 0 2ch;
+      transition: opacity var(--transition), translate var(--transition);
+    }
+    .site-nav_item:first-child { margin-block-start: auto; }
+    .site-nav_item:last-child  { margin-block-end: auto; }
+
+    body:has(.hud-menu[aria-expanded="true"]) {
+      overflow: hidden;
+
+      & .site-nav ul {
+        opacity: 1;
+        visibility: visible;
+        transition: opacity var(--transition), visibility 0s;
+      }
+      & .site-nav_item {
+        opacity: 1;
+        translate: none;
+        transition-delay: calc(var(--i, 0) * var(--reveal-step));
+      }
+    }
+  }
+}

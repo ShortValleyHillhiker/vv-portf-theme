@@ -1,0 +1,16 @@
+{{/* One case in the home listing. main.js builds the same markup from posts.json.
+     dict: page, i (position in the listing: even positions are the wide cards) */}}
+{{ $i := .i }}
+{{ with .page }}
+{{ $label := cond (ne .Params.client .Title) (printf "%s — %s" .Params.client .Title) .Title }}
+<article class="work-post reveal">
+  <a href="{{ .RelPermalink }}" aria-label="{{ $label }}" data-preload="{{ partialCached "preload.html" . .RelPermalink | jsonify }}"></a>
+  <figure>
+    {{ with .Resources.Get .Params.banner }}
+    {{ partial "img.html" (dict "res" . "sizes" (partial "sizes.html" (dict "kind" (cond (modBool $i 2) "card-wide" "card-narrow") "zoom" site.Params.parallaxZoom))) }}
+    {{ end }}
+  </figure>
+  <p>{{ .Params.client | default .Title }}</p>
+  <div class="work-post_tags">{{ range .Params.tags }}<span>{{ . }}</span>{{ end }}</div>
+</article>
+{{ end }}

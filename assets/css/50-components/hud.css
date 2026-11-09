@@ -1,0 +1,188 @@
+@layer components {
+  .hud-logo a,
+  .hud-menu,
+  .hud-controls { pointer-events: auto; }
+
+  /* ---------- Chip: the HUD's basic button ---------- */
+  .hud-chip {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    min-block-size: var(--chip);
+    padding: var(--chip-pad);
+    background-color: var(--c-bg-40);
+    backdrop-filter: blur(var(--blur-chip));
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  button.hud-chip:hover  { background-color: var(--c-bg-60); }
+  button.hud-chip:active { background-color: var(--c-bg); }
+
+  /* Chips shift out by their padding, so their content lines up with the grid:
+     left-hand chips to the left, right-hand chips to the right */
+  /* :where keeps this at zero specificity, so the landscape override below still wins */
+  :where(.hud-logo a, .hud-grid, .hud-theme) { translate: calc(var(--chip-nudge) * -1) 0; }
+  :where(.hud-menu) { translate: var(--chip-nudge) 0; }
+
+  /* ---------- Top row: logo (left), menu button (right, phone only) ---------- */
+  :is(.hud-logo a, .hud-menu) {
+    position: absolute;
+    inset-block-start: var(--gutter);
+  }
+  .hud-logo a:not([href]) { cursor: default; }   /* the home page: a name, not a link */
+  .hud-logo a {
+    inset-inline-start: 0;
+    align-items: center;
+    font-size: var(--fs-1);
+  }
+  .hud-menu {
+    display: none;
+    inset-inline-end: 0;
+    inline-size: var(--chip);
+    flex-direction: column;
+    gap: var(--space-1);
+    transition: gap var(--transition);
+  }
+  .hud-menu_bar {
+    display: block;
+    inline-size: 100%;
+    block-size: var(--line-bold);
+    background-color: var(--c-fg);
+    transition: transform var(--transition);
+  }
+
+  /* Bars turn into an X while the menu is open */
+  .hud-menu[aria-expanded="true"] { gap: 0; }
+  .hud-menu[aria-expanded="true"] .hud-menu_bar            { transform: rotate(45deg) translateX(0.1rem); }
+  .hud-menu[aria-expanded="true"] .hud-menu_bar:last-child { transform: rotate(-45deg) translateX(0.1rem); }
+
+  @media (width <= 51.25em) {
+    .is-home .hud-menu { display: flex; }
+    .hud-chip { background-color: var(--c-bg-80); }
+  }
+
+  /* ---------- Controls (bottom left): grid toggle + theme slider ---------- */
+  .hud-controls {
+    position: absolute;
+    inset-block-end: var(--gutter);
+    inset-inline-start: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+  .hud-grid,
+  .hud-theme { inline-size: var(--chip); }
+
+  /* Short landscape phones: controls move to the right */
+  @media (orientation: landscape) and (height <= 36em) {
+    .hud-controls {
+      inset-inline: auto 0;
+      align-items: flex-end;
+    }
+    .hud-grid, .hud-theme { translate: var(--chip-nudge) 0; }
+  }
+
+  /* ---------- Grid toggle ---------- */
+  .hud-grid {
+    block-size: var(--chip);
+    justify-content: space-between;
+  }
+  .hud-grid_bar {
+    block-size: 100%;
+    inline-size: var(--line-bold);
+    background-color: var(--c-fg);
+    transition: block-size var(--transition);
+  }
+  html[data-grid] .hud-grid_bar { block-size: 0; }
+  html[data-grid] .hud-grid_bar:nth-child(odd) { block-size: 100%; }
+  /* Bounce only after a click, not when the state is restored on page load */
+  html[data-grid] .hud-grid.is-toggled .hud-grid_bar:nth-child(odd) {
+    animation: grid-bounce var(--timing) ease calc(var(--bd, 0) * var(--reveal-step)) 2 alternate;
+  }
+  @keyframes grid-bounce {
+    0%       { block-size: 100%; }
+    75%, to  { block-size: 0%; }
+  }
+
+  /* ---------- Theme slider: a chip that grows into a vertical scale ----------
+     --open (0/1) drives height and dots. No JS needed for this part. */
+  .hud-theme {
+    --open: 0;
+    flex-direction: column;
+    align-items: center;
+    block-size: calc(var(--chip) * (1 + 5 * var(--open)));
+    overflow: hidden;
+    outline: none;
+    transition: block-size var(--transition);
+  }
+
+  /* Mouse: open while hovered, or while focused from the keyboard.
+     A mouse click is not :focus-visible, so leaving always closes it. */
+  @media (hover: hover) {
+    .hud-theme:is(:hover, :has(:focus-visible)) {
+      --open: 1;
+      background-color: var(--c-bg-60);
+    }
+  }
+
+  /* Touch: a tap opens it (the chip has tabindex="-1"), a tap elsewhere closes it */
+  @media (hover: none) {
+    .hud-theme:focus-within {
+      --open: 1;
+      background-color: var(--c-bg-80);
+    }
+    .hud-theme:not(:focus-within) input { pointer-events: none; }
+  }
+
+  .hud-theme_scale {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    inline-size: 100%;
+    block-size: 100%;
+    padding-block: var(--chip-pad);
+  }
+  /* Dots only show while the scale is open; closed, the chip shows just the marker */
+  .hud-theme_dot {
+    inline-size: var(--radius);
+    block-size: var(--radius);
+    background-color: var(--c-fg-40);
+    opacity: var(--open);
+    transition: opacity var(--transition);
+  }
+  .hud-theme_dot:nth-child(3n + 1) { background-color: var(--c-fg); }
+
+  .hud-theme_marker {
+    position: absolute;
+    inset-block-start: calc(var(--chip-pad) + var(--index, 0) * (100% - var(--chip-pad) * 2) / 6);
+    inline-size: calc(var(--space-1) * 2.5);
+    block-size: calc(var(--space-1) * 2.5);
+    border: var(--line-bold) solid var(--c-fg);
+    translate: 0 -50%;
+    transition: inset-block-start var(--timing) var(--ease-out);
+    pointer-events: none;
+  }
+
+  /* The real control: an invisible vertical range input on top. Native drag and
+     arrow keys. On touch it only takes input once the chip is open, so the first
+     tap opens the scale instead of jumping to a theme. */
+  .hud-theme input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    writing-mode: vertical-lr;
+    direction: rtl;
+    appearance: none;
+    cursor: pointer;
+    touch-action: none; /* dragging the scale doesn't scroll the page */
+  }
+  /* The real input is invisible: the chip carries its focus ring */
+  .hud-theme:has(input:focus-visible) {
+    outline: var(--focus-width) solid var(--focus-color);
+    outline-offset: var(--focus-offset);
+  }
+}

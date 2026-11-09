@@ -1,0 +1,9 @@
+{{/* A media item's ratio for --media-ratio, as "w / h". Real size from w and h; force (e.g. "16 / 9")
+     overrides it and must look like a ratio, since it goes into a style attribute.
+     dict: w, h, force, page (for error messages) */}}
+{{ $r := printf "%d / %d" (int .w) (int .h) }}
+{{ with .force }}
+  {{ if not (findRE `^\d+(\.\d+)? ?/ ?\d+(\.\d+)?$` .) }}{{ errorf "%s: ratio %q should look like \"16 / 9\"" $.page.File.Path . }}{{ end }}
+  {{ $r = . }}
+{{ end }}
+{{ return $r }}

@@ -1,0 +1,8 @@
+{{/* Decorative greeting, home page only. CSS animation; main.js starts the reveals when it ends. */}}
+<div class="intro" aria-hidden="true">
+  <div class="intro_words">
+    <div class="intro_stack">
+      {{ range $i, $w := .Params.intro.greeting }}<span class="intro_word" style="--n: {{ $i }}">{{ $w }}</span>{{ end }}
+    </div>
+  </div>
+</div>
