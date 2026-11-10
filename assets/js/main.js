@@ -53,16 +53,6 @@ import params from '@params';   // from hugo.toml, via js.Build in head.html
     };
     sync();
     gridBtn.addEventListener('click', toggle);
-
-    // The intro shows the grid: it sweeps in as the intro starts (on arrival, head script) and,
-    // once the controls have come in, out again the way a click does, so the first look at
-    // the grid ends on the button that runs it.
-    if (root.dataset.intro === 'playing') {
-      if (root.classList.contains('arrived')) toggle();
-      else addEventListener('arrived', toggle, { once: true });
-      // The controls' own animations (none: at once), read the moment they start
-      addEventListener('intro-done', () => afterAnimations(gridBtn.closest('.hud-controls')).then(toggle), { once: true });
-    }
   }
 
   /* ---------- No transitions while resizing ---------- */

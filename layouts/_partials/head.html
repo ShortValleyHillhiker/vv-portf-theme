@@ -4,7 +4,8 @@
 {{ partial "seo.html" . }}
 
 {{/* Blocks render on purpose: theme, grid and intro state must be set before first
-     paint, and arrival must be listened for before the page is revealed. Inlined and minified at build time. */}}
+     paint, and arrival must be listened for before the page is revealed.
+     Inlined and minified at build time. */}}
 {{ $state := `
 document.documentElement.classList.add('js');
 try {

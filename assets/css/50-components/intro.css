@@ -14,6 +14,10 @@
     --intro-out: 600ms;                /* the cover leaving (blur + fade), also when skipped */
     --intro-cover-delay: calc((var(--intro-words) - 1) * var(--intro-step) + var(--intro-in) + var(--intro-hold));
     --hud-delay: 600ms;                /* after the intro, before the HUD starts: the content leads */
+    /* The grid toggle's hint: once the controls have blurred in (the last HUD group, --hud-i 2)
+       and everything has gone still, its bars bounce once. The pause is the quiet in between. */
+    --grid-hint-pause: 1500ms;
+    --grid-hint-delay: calc(var(--hud-delay) + 2 * var(--reveal-step) + var(--reveal-timing) + var(--grid-hint-pause));
   }
 
   .intro {
@@ -93,17 +97,20 @@
 
   html.js:is([data-intro="playing"], [data-intro="skip"]) {
     overflow: hidden;   /* Lenis is held separately (smooth.js) */
-    /* The HUD layer sits over the cover, so its grid overlay shows through the intro
-       (main.js switches it off once the controls are in). The rest of the HUD stays hidden,
-       and out of reach of clicks and Tab, until then. */
-    & .layer-hud { z-index: calc(var(--z-intro) + 1); }
-    & :is(.hud-logo, .hud-menu, .hud-controls) { opacity: 0; visibility: hidden; }
+    & :is(.hud-logo, .hud-menu, .hud-controls) { opacity: 0; }
     @media (width > 51.25em) { & .site-nav { opacity: 0; } }   /* rail: desktop only */
   }
   html.js[data-intro="done"] {
     & :is(.hud-logo, .hud-menu, .hud-controls) {
       animation: blur-in var(--reveal-timing) var(--reveal-ease)
         calc(var(--hud-delay) + var(--hud-i) * var(--reveal-step)) backwards;
+    }
+    /* The grid toggle's bars play their bounce (hud.css) once, a wave from bar to bar, and
+       end where they started: a hint at the button, the grid stays off. Until the first
+       click (.is-toggled), so switching the grid off later doesn't replay it. */
+    & .hud-grid:not(.is-toggled) .hud-grid_bar {
+      animation: grid-bounce var(--timing) ease
+        calc(var(--grid-hint-delay) + var(--bd, 0) * var(--reveal-step)) 2 alternate;
     }
     @media (width > 51.25em) {
       & .site-nav {
