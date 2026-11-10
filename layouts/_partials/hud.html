@@ -1,3 +1,5 @@
+{{/* The fixed layers over the page: the section nav, and the HUD (logo, menu button, grid
+     toggle, theme slider, grid overlay). */ -}}
 <div class="layer layer-nav">
   <div class="layer_rail">
     <nav class="site-nav" id="site-nav" aria-label="Sektioner">
@@ -32,7 +34,8 @@
           {{ range 7 }}<div class="hud-theme_dot"></div>{{ end }}
           <div class="hud-theme_marker"></div>
         </div>
-        <input type="range" min="0" max="6" step="1" value="6" aria-label="Tema">
+        {{/* One name per theme (theme-0 … theme-6 in 20-tokens.css), read out as the value */}}
+        <input type="range" min="0" max="6" step="1" aria-label="Tema" data-names='["Mörk","Röd","Blå","Gul","Ljus","Ljus/röd","Ljus/blå"]'>
       </div>
     </div>
 

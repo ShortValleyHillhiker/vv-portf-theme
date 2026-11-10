@@ -1,6 +1,6 @@
 # vennerstrom.se
 
-Hugo site. Built from the prototype one folder up and following [stack.md](../stack.md): native CSS/JS, Lenis as the only dependency, no npm.
+Hugo site. Native CSS and JS, Lenis as the only dependency, no npm.
 
 ## Run
 
@@ -94,3 +94,8 @@ Every link to a case (home cards, "Visa fler" cards, next case) carries `data-pr
 Put the original in the case folder. Hugo makes 640, 960, 1280, 1920 and 2560px WebP versions (never larger than the original) and writes `srcset`, `width` and `height`. Only these sizes are published, not the originals.
 
 Which file a browser fetches depends on the image's `sizes`, written by `layouts/_partials/sizes.html` from the page grid: full width, a share of a grid row, home cards (including the parallax zoom), the portrait, and never taller than the screen. Lazy images also get `sizes="auto"`, so browsers that support it use the measured width. Change the grid or the breakpoints in the CSS, and that partial needs the same change.
+
+## Open items
+
+- A real share image (`shareImage` in `hugo.toml`): it's the portrait for now.
+- Scrollbars are hidden site-wide (`10-reset.css`). Worth another look now that Lenis is in.

@@ -1,9 +1,10 @@
+{{/* Everything in <head>: SEO, the state script, the font preload, the CSS and JS bundles. */ -}}
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 {{ partial "seo.html" . }}
 
-{{/* Blocks render on purpose (stack.md §6.1): theme, grid and intro state must be set
-     before first paint. Inlined and minified at build time. */}}
+{{/* Blocks render on purpose: theme, grid and intro state must be set before first
+     paint, and arrival must be listened for before the page is revealed. Inlined and minified at build time. */}}
 {{ $state := `
 document.documentElement.classList.add('js');
 try {
@@ -18,9 +19,13 @@ try {
 } catch { document.documentElement.classList.add('theme-6'); }
 // Arrival: the content comes in through the reveals (main.js), which start on 'arrived':
 // after the old page has faded out (view transition), or once this page has settled.
+// Not while hidden (preloaded as the address is typed, a background tab): it arrives when shown.
 {
   const root = document.documentElement;
-  const arrive = () => { root.classList.add('arrived'); dispatchEvent(new Event('arrived')); };
+  const arrive = () => {
+    if (document.hidden) return document.addEventListener('visibilitychange', arrive, { once: true });
+    root.classList.add('arrived'); dispatchEvent(new Event('arrived'));
+  };
   // Failsafe: if main.js never finishes its setup, show the page anyway. main.js cancels this.
   window.__failsafe = setTimeout(() => {
     if (root.dataset.intro) root.dataset.intro = 'seen';
@@ -37,13 +42,14 @@ try {
 {{/* Sorted by path, so 00-layers.css (the @layer order) comes first and 50-components/ sits between 40 and 60 */}}
 {{/* hugo --environment readable: the same bundles, not minified (export-readable.sh) */}}
 {{ $minify := ne hugo.Environment "readable" }}
-{{ $css := sort (resources.Match "css/**.css") "Name" | resources.Concat "css/bundle.css" }}
+{{/* The bundle runs as a template, for the few values shared with Hugo and JS (site.Params) */}}
+{{ $css := sort (resources.Match "css/**.css") "Name" | resources.Concat "css/bundle.css" | resources.ExecuteAsTemplate "css/style.css" site }}
 {{ if $minify }}{{ $css = $css | minify }}{{ end }}
 {{ $css = $css | fingerprint }}
 <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
 <link rel="icon" href="{{ partial "link.html" "/img/favicon.svg" }}" type="image/svg+xml">
 
-{{ $main := resources.Get "js/main.js" | js.Build (dict "minify" $minify) | fingerprint }}
+{{ $main := resources.Get "js/main.js" | js.Build (dict "minify" $minify "params" (dict "reveal" site.Params.reveal)) | fingerprint }}
 {{ $smooth := resources.Get "js/smooth.js" | js.Build (dict "minify" $minify "format" "esm") | fingerprint }}
 <script src="{{ $main.RelPermalink }}" defer data-smooth="{{ $smooth.RelPermalink }}"></script>
 <script type="speculationrules">

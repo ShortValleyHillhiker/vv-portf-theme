@@ -1,0 +1,8 @@
+{{/* The button under a home listing: main.js fetches the next items, ready-made HTML,
+     from posts.json and puts them in before this row.
+     dict: type (work | blog | background), text, batch */}}
+{{ $src := "/posts.json" }}
+{{ with site.Home.OutputFormats.Get "posts" }}{{ $src = .RelPermalink }}{{ end }}
+<div class="load-row reveal" data-needs-js>
+  <button class="secondary" type="button" data-load-more="{{ .type }}" data-src="{{ $src }}" data-batch="{{ .batch }}" data-error="Kunde inte ladda — försök igen" hidden>{{ .text | default "Visa fler" }}</button>
+</div>

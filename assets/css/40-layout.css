@@ -1,3 +1,4 @@
+/* Layout: the page grid (body, main, sections) and break-outs, which run across the nav rail. */
 @layer layout {
   body {
     display: grid;
@@ -10,6 +11,9 @@
     grid-template-columns: var(--g-page);
     gap: var(--section-gap) var(--gutter);
     padding-block: var(--pad-block) var(--pad-end);
+    /* A reveal waiting at the bottom sits --reveal-shift lower and would stretch the page,
+       which then snaps shorter as it rises. Clip it at main's end: it rises into view instead. */
+    overflow-y: clip;
   }
 
   /* Sections start in column 2: column 1 belongs to the nav rail. They take the page's

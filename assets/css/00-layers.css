@@ -1,1 +1,2 @@
+/* The cascade order. Sorts first in the bundle (head.html), so every other file only names its layer. */
 @layer reset, tokens, base, layout, components, utilities, motion;

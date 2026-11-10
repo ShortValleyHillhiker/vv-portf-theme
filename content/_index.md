@@ -3,9 +3,9 @@ title: Victor Vennerström
 description: Victor Vennerström är art director i Göteborg — koncept, kampanj och form för varumärken som vill säga något.
 
 intro:
-  greeting: [Tjabba, Tjena, Hallå]
+  greeting: [Tjabba!, Tjena!, Hallå!]
   label: Art director @ Confetti
-  heading: Tja! Mitt namn är Victor Vennerström, en vetgirig och formstark art director från Göteborg. Jag står stadigt med ena benet i koncept och andra i design.
+  heading: Tja! Mitt namn är Victor Vennerström, en vetgirig och formstark art director från Göteborg.
   buttons:
     - { text: Case, href: "#case", style: primary }
     - { text: Om mig, href: "#om-mig", style: secondary }
@@ -16,16 +16,20 @@ work:
 
 about:
   label: Om mig
-  statement: Jag har varit med länge nog att veta att man ska tala till bönder på bönders vis, likväl gäller även rekryterare och webbcrawlers.
+  statement: Jag har arbetat med kommunikation sedan 2018 och förstår vikten av att anpassa material, tala till bönder på bönders vis så att säga. Samma sak gäller även rekryterare och webbcrawlers.
   question: Om du berättar vad du jobbar med så berättar jag mer om mig själv.
   messages:
     - role: Byråchef
       nosnippet: true
       text: Jag är lean-agil, holistisk och proaktiv, itererar fram quick wins i varje sprint, och vill skapa marknadsföring som är både kreativ och får årsbudgeten att gå ihop.
     - role: Creative Director
-      text: Mitt mål är att ge allt för att göra koncept starkare än man trodde var möjligt.
+      text: Jag vill bygga från grunden, nörda ner mig i briefen och knåda. Begränsningar är befriande och ökar möjligheten för kreativitet.
+    - role: Projektledare
+      text: Lol
+    - role: Mediaköp
+      text: lmao vad gör du här
     - role: Art director
-      text: Jag har en stark hatkärlek till smarta kampanjer. Sånt som får en att utbryta i ett ”fan vad bra... Jag hatar det”. När insikten är tydlig redan innan du fått den förklarad och budskapet bottnar i en empatisk verklighet.
+      text: Jag har en stark hatkärlek till smarta kampanjer. Sånt som får en att utbryta i ett ”fan vad bra... Jag hatar det”. När insikten är tydlig redan innan du fått den förklarad och budskapet bottnar i empati.
     - role: Copywriter
       text: Du kanske klickade här för att du hittade ett stavfel? Hör av dig!
     - role: Webbutvecklare
@@ -35,12 +39,12 @@ about:
     - Jag har arbetat med kunder som SSAB, Asics, Dekra, Ejendals, Göteborgsvarvet, Götaplatsgruppen, Falu Gruva, Dalelven och Careium samt in-house i en hårt reglerad bransch, med brett varumärkesansvar från daglig kommunikation till strategi, kampanj och varumärke.
     - Jag kan illustrera, bygga hemsidor från grunden, animera, modellera i 3D, skillnaden på Fogra39 och Fogra49, samtidigt som jag älskar att utveckla strategier, koncept, kampanjer och kreativa annonslösningar.
     - Jag vill jobba med uppdrag där kunden litar på oss och vågar chansa på stora idéer.
-  # Non-breaking spaces (U+00A0) keep "1x shortlist" and "Svenska designpriset" on one line
   awards: "**2x guld** Gerillaägget 2025, **1x shortlist** Svenska designpriset 2025"
   awardsNote: ^ En *liten* prislista jag med ett brett leende skulle göra större.
 
 background:
   heading: Bakgrund
+  more: Ladda tjänster innan 2023
   items:
     - org: Confetti
       role: Art director
@@ -70,6 +74,7 @@ background:
 
 blog:
   label: Lösa skott
+  more: Ladda fler inlägg
   text: Har du tagit dig så här långt ner, kanske du tillochmed vill läsa mer? Titt som tätt får jag för mig att skriva något i förhoppningen om att någon läser.
 
 contact:

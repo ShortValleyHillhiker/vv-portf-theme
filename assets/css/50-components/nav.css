@@ -1,5 +1,6 @@
+/* Section nav: a rail on the left on desktop, a full-screen menu on phones. */
 @layer components {
-  /* Desktop: a fixed rail on the left, home page only */
+  /* ---------- Desktop: a fixed rail on the left, home page only ---------- */
   .site-nav {
     position: absolute;
     inset: var(--pad-block) auto auto 0;

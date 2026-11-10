@@ -1,3 +1,4 @@
+/* Utilities: the skip link and the no-JS guard. */
 @layer utilities {
   .skip-link {
     position: absolute;

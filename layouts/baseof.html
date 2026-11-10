@@ -1,5 +1,10 @@
+{{/* Every page's frame. The home page adds the intro and data-intro. */ -}}
 <!doctype html>
 <html lang="{{ site.Language.Locale }}"{{ if .IsHome }} data-intro="playing"{{ end }}>
+{{/* A hello for whoever reads the source: assets/ascii.txt, printed as an HTML comment.
+     Template comments are dropped by Go's html/template, so it goes out as raw HTML.
+     Plain ASCII only (no å ä ö), and never "-->", which would end the comment. */ -}}
+{{ with resources.Get "ascii.txt" }}{{ printf "<!--%s-->" .Content | safeHTML }}{{ end }}
 <head>
   {{ partial "head.html" . }}
 </head>

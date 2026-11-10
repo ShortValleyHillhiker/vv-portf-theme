@@ -1,10 +1,9 @@
+/* Home intro: "Tjabba", "Tjena", "Hallå" stack in one by one, hold, then the cover fades.
+   The HUD fades in after it, as the content starts revealing (main.js waits for the cover).
+   Pure CSS: it also plays without JS. main.js only waits for it and lets the visitor skip.
+   State: html[data-intro] = playing (home markup) → skip → done, or "seen" (head script:
+   already played this session, reduced motion, or the failsafe). */
 @layer components {
-  /* Home intro: "Tjabba", "Tjena", "Hallå" stack in one by one, hold, then the cover fades.
-     The HUD fades in after it, as the content starts revealing (main.js waits for the cover).
-     Pure CSS: it also plays without JS. main.js only waits for it and lets the visitor skip.
-     State: html[data-intro] = playing (home markup) → skip → done, or "seen" (head script:
-     already played this session, reduced motion, or the failsafe). */
-
   /* Component tokens: delete this file and they go with it */
   :root {
     --intro-words: 3;
@@ -94,7 +93,11 @@
 
   html.js:is([data-intro="playing"], [data-intro="skip"]) {
     overflow: hidden;   /* Lenis is held separately (smooth.js) */
-    & :is(.hud-logo, .hud-menu, .hud-controls) { opacity: 0; }
+    /* The HUD layer sits over the cover, so its grid overlay shows through the intro
+       (main.js switches it off once the controls are in). The rest of the HUD stays hidden,
+       and out of reach of clicks and Tab, until then. */
+    & .layer-hud { z-index: calc(var(--z-intro) + 1); }
+    & :is(.hud-logo, .hud-menu, .hud-controls) { opacity: 0; visibility: hidden; }
     @media (width > 51.25em) { & .site-nav { opacity: 0; } }   /* rail: desktop only */
   }
   html.js[data-intro="done"] {

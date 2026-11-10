@@ -1,0 +1,8 @@
+{{/* One work-history entry (Bakgrund), in the home page and in posts.json for "Visa fler".
+     No link of its own, so it takes focus itself (tabindex -1) when loaded in. */}}
+<div class="background-item" tabindex="-1">
+  <small>{{ .org }}</small>
+  <p class="fs-8">{{ .role }}</p>
+  <p><span>{{ .years }}</span>, {{ .place }}</p>
+  <p>{{ .text }}</p>
+</div>

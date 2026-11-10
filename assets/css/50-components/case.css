@@ -1,3 +1,4 @@
+/* Case and blog pages: intro, text blocks, brief, quote, media and the next case at the end. */
 @layer components {
   main:has(.case-intro) {
     row-gap: var(--gap-feature);

@@ -8,18 +8,24 @@ enableRobotsTXT = true
 [params]
   author = 'Victor Vennerström'
   description = 'Victor Vennerström är art director i Göteborg — koncept, kampanj och form för varumärken som vill säga något.'
-  # Share image (og:image) for pages without a banner. A path in assets/. TODO: a real share image
+  # Share image (og:image) for pages without a banner. A path in assets/.
   shareImage = 'images/victor.webp'
   # Items rendered into the page; the rest come from posts.json via "Visa fler"
-  workInitial = 3
-  workBatch = 3
-  blogInitial = 2
-  blogBatch = 2
+  workInitial = 4
+  workBatch = 4
+  blogInitial = 5
+  blogBatch = 5
+  backgroundInitial = 3
+  backgroundBatch = 3
   # Media items warmed while a case link is hovered (main.js): the case's first screen
   preloadMedia = 3
-  # How far parallax images are zoomed, so their srcset sizes can allow for it.
-  # Must match --parallax-zoom in assets/css/80-flare.css (1 + --parallax x 2.2).
+  # How far parallax images are zoomed (80-flare.css derives the drift from it), so their
+  # srcset sizes can allow for it
   parallaxZoom = 1.22
+  # What the reveals bring in, for both 70-motion.css and main.js: .reveal, and every direct
+  # child of a [data-reveal-children] container (Markdown output has no classes). A nested
+  # container reveals its own children instead of itself.
+  reveal = '.reveal, [data-reveal-children] > :not([data-reveal-children])'
 
 [permalinks.page]
   work = '/:contentbasename/'
@@ -45,7 +51,7 @@ enableRobotsTXT = true
 
 [markup.goldmark.parser]
   # A lone image becomes its own block, so the image hook can return a <figure>
-  # instead of a <figure> inside a <p> (stack.md open item)
+  # instead of a <figure> inside a <p>, which isn't valid HTML
   wrapStandAloneImageWithinParagraph = false
   [markup.goldmark.parser.attribute]
     block = true
@@ -53,6 +59,11 @@ enableRobotsTXT = true
   # Lets a vimeo shortcode sit inside {{< grid >}} (the grid renders its inside as Markdown).
   # All content is written by the site owner.
   unsafe = true
+
+# hugo --minify drops HTML comments, and with them the hello in assets/ascii.txt (baseof.html).
+# Template comments never reach the HTML, so this keeps only that one.
+[minify.tdewolff.html]
+  keepComments = true
 
 [imaging]
   resampleFilter = 'Lanczos'

@@ -4,8 +4,8 @@
 @layer motion {
   /* Component tokens: delete this file and they go with it */
   :root {
-    --parallax: 0.1;                                   /* images drift ±10% of their height */
-    --parallax-zoom: calc(1 + var(--parallax) * 2.2);  /* zoomed just enough that no edge shows */
+    --parallax-zoom: {{ site.Params.parallaxZoom }};      /* hugo.toml: the srcset sizes allow for it */
+    --parallax: calc((var(--parallax-zoom) - 1) / 2.2);  /* the drift (±10% of the height at 1.22): just enough that no edge shows */
   }
 
   /* ---------- Image parallax ----------

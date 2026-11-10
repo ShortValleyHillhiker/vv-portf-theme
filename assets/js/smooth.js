@@ -1,3 +1,5 @@
+// Smooth scroll (Lenis): the page, anchor jumps and the sideways strips. Loaded by main.js only
+// with a fine pointer and motion allowed.
 import Lenis from './vendor/lenis.mjs';
 
 // Anchor jumps: a fixed duration (CSS token --scroll-duration) with an ease-in-out curve,

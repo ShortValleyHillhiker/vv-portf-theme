@@ -1,3 +1,4 @@
+/* Contact: the footer section with links and the portrait. */
 @layer components {
   /* On the page grid: heading and links on the left half, portrait on the right */
   @media (width > 64em) {

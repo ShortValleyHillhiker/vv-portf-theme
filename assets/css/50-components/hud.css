@@ -1,3 +1,4 @@
+/* HUD: the fixed chips over the page (logo, menu button, grid toggle, theme slider). */
 @layer components {
   .hud-logo a,
   .hud-menu,

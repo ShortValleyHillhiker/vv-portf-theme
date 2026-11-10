@@ -1,3 +1,4 @@
+/* Grid overlay: the page's column lines, shown by the HUD's grid toggle. */
 @layer components {
   /* Column lines that match main's page grid. Toggled by .hud-grid (data-grid on <html>). */
   /* Columns beyond --page-cols wrap onto zero-height rows, so the overlay always shows

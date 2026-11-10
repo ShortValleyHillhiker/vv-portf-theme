@@ -1,9 +1,9 @@
+{{/* The home page: one section per block in content/_index.md (front matter). A missing
+     block leaves its section out. */}}
 {{ define "main" }}
 {{ $p := .Params }}
 {{ $work := (where site.RegularPages "Section" "work").ByDate.Reverse }}
 {{ $blog := (where site.RegularPages "Section" "blog").ByDate.Reverse }}
-{{ $posts := "/posts.json" }}
-{{ with .OutputFormats.Get "posts" }}{{ $posts = .RelPermalink }}{{ end }}
 
 {{ with $p.intro }}
 <section id="intro">
@@ -27,9 +27,7 @@
     {{ range $i, $p := first site.Params.workInitial $work }}{{ partial "work-card.html" (dict "page" $p "i" $i) }}{{ end }}
   </div>
   {{ if gt (len $work) site.Params.workInitial }}
-  <div class="load-row reveal" data-needs-js>
-    <button class="secondary" type="button" data-load-more="work" data-src="{{ $posts }}" data-batch="{{ site.Params.workBatch }}" hidden>Visa fler</button>
-  </div>
+  {{ partial "load-more.html" (dict "type" "work" "text" .more "batch" site.Params.workBatch) }}
   {{ end }}
 </section>
 {{ end }}
@@ -43,10 +41,12 @@
 
   <div class="about-messages" data-reveal-children>
     <p class="fs-7" id="messages-question">{{ .question }}</p>
-    <div class="messages-input" role="tablist" aria-labelledby="messages-question" data-scroll-x>
-      {{ range $i, $m := .messages }}
-      <button class="tertiary" type="button" role="tab" id="messages-tab-{{ $i }}" aria-controls="messages-panel-{{ $i }}" aria-selected="{{ eq $i 0 }}"{{ if $i }} tabindex="-1"{{ end }}>{{ $m.role }}</button>
-      {{ end }}
+    <div class="messages-strip">
+      <div class="messages-input" role="tablist" aria-labelledby="messages-question" data-scroll-x>
+        {{ range $i, $m := .messages }}
+        <button class="tertiary" type="button" role="tab" id="messages-tab-{{ $i }}" aria-controls="messages-panel-{{ $i }}" aria-selected="{{ eq $i 0 }}"{{ if $i }} tabindex="-1"{{ end }}>{{ $m.role }}</button>
+        {{ end }}
+      </div>
     </div>
     <div class="messages-output">
       {{ range $i, $m := .messages }}
@@ -72,14 +72,11 @@
   <div class="section-heading" data-reveal-children>
     <h2>{{ .heading }}</h2>
   </div>
-  <div class="background" data-reveal-children>
-    {{ range .items }}
-    <div class="background-item">
-      <small>{{ .org }}</small>
-      <p class="fs-8">{{ .role }}</p>
-      <p><span>{{ .years }}</span>, {{ .place }}</p>
-      <p>{{ .text }}</p>
-    </div>
+  {{/* The latest few in the page; the button fetches the rest from posts.json */}}
+  <div class="background" data-listing="background" data-reveal-children>
+    {{ range first site.Params.backgroundInitial .items }}{{ partial "background-item.html" . }}{{ end }}
+    {{ if gt (len .items) site.Params.backgroundInitial }}
+    {{ partial "load-more.html" (dict "type" "background" "text" .more "batch" site.Params.backgroundBatch) }}
     {{ end }}
   </div>
 </section>
@@ -94,9 +91,7 @@
   <div class="blog-list" data-listing="blog">
     {{ range first site.Params.blogInitial $blog }}{{ partial "blog-item.html" . }}{{ end }}
     {{ if gt (len $blog) site.Params.blogInitial }}
-    <div class="load-row reveal" data-needs-js>
-      <button class="secondary" type="button" data-load-more="blog" data-src="{{ $posts }}" data-batch="{{ site.Params.blogBatch }}" hidden>Visa fler</button>
-    </div>
+    {{ partial "load-more.html" (dict "type" "blog" "text" .more "batch" site.Params.blogBatch) }}
     {{ end }}
   </div>
 </section>

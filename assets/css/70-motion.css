@@ -1,5 +1,7 @@
+/* Motion: page transitions, the shared keyframes, reveals, smooth scroll and the global guards
+   (resizing, reduced motion). The last layer, so it can override any component. */
 @layer motion {
-  /* ---------- Page transitions (§5) ---------- */
+  /* ---------- Page transitions ---------- */
   @view-transition { navigation: auto; }
 
   /* The HUD stays put while the page changes: its parts are captured on their own, not in the
@@ -59,11 +61,9 @@
   }
 
   /* ---------- Reveal on load and scroll (main.js adds .revealed with a stagger --i) ----------
-     Targets: .reveal, and every direct child of a [data-reveal-children] container
-     (for Markdown output, which has no classes). A nested container reveals its own
-     children instead of itself. Keep this selector in sync with REVEAL in main.js.
+     Targets: params.reveal in hugo.toml, shared with main.js.
      Hidden only when JS runs, so content always shows without it. */
-  html.js:not(.failsafe) :is(.reveal, [data-reveal-children] > :not([data-reveal-children])) {
+  html.js:not(.failsafe) :is({{ site.Params.reveal }}) {
     opacity: 0;
     filter: blur(var(--reveal-blur));
     translate: 0 var(--reveal-shift);

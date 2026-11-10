@@ -1,8 +1,9 @@
-{{/* One case in the home listing. main.js builds the same markup from posts.json.
+{{/* One case in the home listing, and in posts.json for "Visa fler".
      dict: page, i (position in the listing: even positions are the wide cards) */}}
 {{ $i := .i }}
 {{ with .page }}
-{{ $label := cond (ne .Params.client .Title) (printf "%s — %s" .Params.client .Title) .Title }}
+{{ $label := .Title }}
+{{ with .Params.client }}{{ if ne . $label }}{{ $label = printf "%s — %s" . $label }}{{ end }}{{ end }}
 <article class="work-post reveal">
   <a href="{{ .RelPermalink }}" aria-label="{{ $label }}" data-preload="{{ partialCached "preload.html" . .RelPermalink | jsonify }}"></a>
   <figure>

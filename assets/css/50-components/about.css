@@ -1,3 +1,4 @@
+/* About (Om mig): the message tabs with their sideways strip, and the work history (Bakgrund). */
 @layer components {
   /* ---------- Messages ("tell me what you do") ---------- */
   .about-messages {
@@ -8,37 +9,56 @@
   }
   .about-messages > p { color: var(--c-fg-72); }
 
+  /* The strip's frame: holds the blurred edges, which can't live inside the scrolling strip */
+  .messages-strip {
+    --edge-fade: var(--space-5);
+    position: relative;
+    /* A scroll container clips its contents: the strip's padding gives the tabs' focus rings
+       room inside it, and this matching negative margin keeps the strip where it was */
+    margin: calc(var(--space-3) - var(--focus-room)) calc(var(--focus-room) * -1) 0;
+  }
+
   .messages-input {
     display: flex;
     flex-wrap: nowrap;
     gap: var(--space-3);
     overflow-x: auto;
     user-select: none;
-    /* A scroll container clips its contents: padding gives the tabs' focus rings room inside it,
-       and the matching negative margin keeps the strip where it was */
     padding: var(--focus-room);
     padding-block-end: max(var(--space-1), var(--focus-room));   /* also room for the underline */
-    margin: calc(var(--space-3) - var(--focus-room)) calc(var(--focus-room) * -1) 0;
 
     /* No scrollbar (hidden site-wide, 10-reset.css). Instead the strip fades out at an edge
-       where more tabs are hidden: a mask (so it shows whatever is behind, in every theme),
-       driven by the strip's own scroll position. At the start only the end fades, at the
-       end only the start, in between both. Not scrollable, or no scroll timelines: no fade. */
-    --edge-fade: var(--space-5);
+       where more tabs are hidden: a mask (so it shows whatever is behind, in every theme).
+       main.js sets data-fade-start / data-fade-end from the scroll position; the fade
+       lengths are registered, so they ease in and out. Without JS: no fade. */
     mask-image: linear-gradient(to right,
       transparent, #000 var(--fade-start),
       #000 calc(100% - var(--fade-end)), transparent);
-    animation: scroll-edges linear both;
-    animation-timeline: scroll(self inline);
+    transition: --fade-start var(--transition), --fade-end var(--transition);
+    &[data-fade-start] { --fade-start: var(--edge-fade); }
+    &[data-fade-end]   { --fade-end: var(--edge-fade); }
   }
   @property --fade-start { syntax: "<length>"; inherits: false; initial-value: 0px; }
   @property --fade-end   { syntax: "<length>"; inherits: false; initial-value: 0px; }
-  @keyframes scroll-edges {
-    from { --fade-start: 0px;              --fade-end: var(--edge-fade); }
-    10%  { --fade-start: var(--edge-fade); }
-    90%  {                                 --fade-end: var(--edge-fade); }
-    to   { --fade-start: var(--edge-fade); --fade-end: 0px; }
+
+  /* Blurred edges: the tabs blur as they fade out. A backdrop blur over each end of the frame,
+     itself fading in towards the edge, shown with the matching fade. */
+  .messages-strip::before,
+  .messages-strip::after {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    z-index: 1;   /* above the masked strip, which paints as its own layer */
+    inline-size: var(--edge-fade);
+    backdrop-filter: blur(var(--blur-chip));
+    opacity: 0;
+    transition: opacity var(--transition);
+    pointer-events: none;
   }
+  .messages-strip::before { inset-inline-start: 0; mask-image: linear-gradient(to left, transparent, #000); }
+  .messages-strip::after  { inset-inline-end: 0;   mask-image: linear-gradient(to right, transparent, #000); }
+  .messages-strip:has(> [data-fade-start])::before,
+  .messages-strip:has(> [data-fade-end])::after { opacity: 1; }
 
   /* ---------- About text ---------- */
   .about-content {
@@ -70,6 +90,9 @@
   }
   .background-item > p { color: var(--c-fg-72); }
   .background-item > p span { color: var(--c-fg); }
+  /* Loaded entries take focus so the keyboard continues from them; they're not controls, so no ring */
+  .background-item:focus { outline: none; }
+  .background .load-row { justify-content: flex-start; }   /* in line with the entries above */
   .background-item > .fs-8 {
     margin-block-end: var(--space-1);
     color: var(--c-fg);

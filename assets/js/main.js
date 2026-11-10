@@ -1,14 +1,12 @@
-// Runs once per page load. Each section below is independent; stack.md §6.
+// The site's behaviour, run once per page load (deferred). Each section below stands alone
+// and skips itself when its markup isn't on the page.
+import params from '@params';   // from hugo.toml, via js.Build in head.html
 {
   const root = document.documentElement;
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Settles when the element's running animations have (not its children's), or at once if none
+  const afterAnimations = el => Promise.allSettled(el.getAnimations().map(a => a.finished));
   const atBottom = () => innerHeight + scrollY >= root.scrollHeight - 2;
-  const el = (tag, className, text) => {
-    const n = document.createElement(tag);
-    if (className) n.className = className;
-    if (text) n.textContent = text;
-    return n;
-  };
 
   /* ---------- Favicon: a square in the theme colour ---------- */
   const icon = document.querySelector('link[rel="icon"]');
@@ -21,16 +19,17 @@
 
   /* ---------- Theme slider ----------
      Opening and dragging are CSS and the native range input; JS only applies the value. */
-  const THEME_NAMES = ['Mörk', 'Röd', 'Blå', 'Gul', 'Ljus', 'Ljus/röd', 'Ljus/blå'];
-  const themeOf = () => +(root.className.match(/\btheme-(\d)\b/)?.[1] ?? 6);
+  // The head script always sets a theme class (its default when nothing is saved)
+  const themeOf = () => +root.className.match(/\btheme-(\d+)\b/)[1];
 
   const themeInput = document.querySelector('.hud-theme input');
   const themeChip = themeInput?.closest('.hud-theme');
+  const themeNames = JSON.parse(themeInput?.dataset.names ?? '[]');   // hud.html
   const applyTheme = n => {
     root.classList.replace('theme-' + themeOf(), 'theme-' + n);
     themeChip.style.setProperty('--index', themeInput.max - n);
     themeInput.value = n;
-    themeInput.setAttribute('aria-valuetext', THEME_NAMES[n]);
+    themeInput.setAttribute('aria-valuetext', themeNames[n]);
     paintFavicon();
     try { localStorage.setItem('tema', n); } catch {}
   };
@@ -46,13 +45,24 @@
   const gridBtn = document.querySelector('.hud-grid');
   if (gridBtn) {
     const sync = () => gridBtn.setAttribute('aria-pressed', root.hasAttribute('data-grid'));
-    sync();
-    gridBtn.addEventListener('click', () => {
+    const toggle = () => {
       const on = root.toggleAttribute('data-grid');
-      gridBtn.classList.add('is-toggled'); // bounce the icon only after a click
+      gridBtn.classList.add('is-toggled'); // bounce the icon only when toggled, not on page load
       try { sessionStorage.setItem('grid', on ? '1' : ''); } catch {}
       sync();
-    });
+    };
+    sync();
+    gridBtn.addEventListener('click', toggle);
+
+    // The intro shows the grid: it sweeps in as the intro starts (on arrival, head script) and,
+    // once the controls have come in, out again the way a click does, so the first look at
+    // the grid ends on the button that runs it.
+    if (root.dataset.intro === 'playing') {
+      if (root.classList.contains('arrived')) toggle();
+      else addEventListener('arrived', toggle, { once: true });
+      // The controls' own animations (none: at once), read the moment they start
+      addEventListener('intro-done', () => afterAnimations(gridBtn.closest('.hud-controls')).then(toggle), { once: true });
+    }
   }
 
   /* ---------- No transitions while resizing ---------- */
@@ -108,6 +118,25 @@
     navLinks.get(sections[0]).setAttribute('aria-current', 'location');
   }
 
+  /* ---------- Sideways strips: edge fades (data-scroll-x) ----------
+     An edge fades (CSS: data-fade-start / data-fade-end) while there's more to scroll
+     towards it: at the start only the end fades, at the end only the start, in between
+     both. Not scrollable: neither. Native or Lenis, both fire scroll events. */
+  const fadeEdges = strip => {
+    const range = strip.scrollWidth - strip.clientWidth;
+    const at = strip.scrollLeft;   // below 0 or past range while iOS bounces at an end
+    strip.toggleAttribute('data-fade-start', at > 0);
+    strip.toggleAttribute('data-fade-end', Math.ceil(at) < range);   // ceil: the end can be a fraction short
+  };
+  // The strip and its items: an item grows (the web font arriving) without the strip changing size
+  const stripSize = new ResizeObserver(entries =>
+    entries.forEach(e => fadeEdges(e.target.closest('[data-scroll-x]'))));
+  for (const strip of document.querySelectorAll('[data-scroll-x]')) {
+    strip.addEventListener('scroll', () => fadeEdges(strip), { passive: true });
+    for (const box of [strip, ...strip.children]) stripSize.observe(box);
+    fadeEdges(strip);
+  }
+
   /* ---------- Message tabs (arrow keys, Home, End) ---------- */
   for (const list of document.querySelectorAll('[role="tablist"]')) {
     const tabs = [...list.querySelectorAll('[role="tab"]')];
@@ -145,9 +174,8 @@
   }
 
   /* ---------- Reveal: stagger items in as they enter, on arrival and on scroll ---------- */
-  // Same targets as the CSS in 70-motion.css
-  const REVEAL = '.reveal, [data-reveal-children] > :not([data-reveal-children])';
-  const reveals = [...document.querySelectorAll(REVEAL)];
+  // The same targets as 70-motion.css: params.reveal in hugo.toml
+  const reveals = [...document.querySelectorAll(params.reveal)];
 
   const settle = el => {
     revealIO.unobserve(el);
@@ -247,45 +275,9 @@
   }
 
   /* ---------- Load more ----------
-     <div class="load-row"><button data-load-more="work|blog" data-src="/posts.json" data-batch="3"></div>
-     inside the listing [data-listing="work|blog"]. New items go in before the button row. */
-  const safeUrl = u => {
-    try {
-      const url = new URL(u, location.origin);
-      return url.protocol === 'http:' || url.protocol === 'https:' ? url.href : '#';
-    } catch { return '#'; }
-  };
-
-  const workCard = p => {
-    const article = el('article', 'work-post reveal');
-    const link = el('a');
-    link.href = safeUrl(p.url);
-    link.setAttribute('aria-label', p.client ? `${p.client} — ${p.title}` : p.title);
-    if (p.preload) link.dataset.preload = JSON.stringify(p.preload);
-    const fig = el('figure');
-    const img = Object.assign(el('img'), {
-      src: p.banner, alt: p.alt ?? '', width: p.width ?? 800, height: p.height ?? 600, loading: 'lazy', decoding: 'async',
-    });
-    if (p.srcset) {
-      img.srcset = p.srcset;
-      img.sizes = p.sizes ?? '100vw';
-    }
-    fig.append(img);
-    const tags = el('div', 'work-post_tags');
-    tags.append(...(p.tags ?? []).map(t => el('span', '', t)));
-    article.append(link, fig, el('p', '', p.client || p.title), tags);
-    return article;
-  };
-
-  const blogItem = p => {
-    const article = el('article', 'blog-item reveal');
-    const link = el('a');
-    link.href = safeUrl(p.url);
-    link.setAttribute('aria-label', p.title);
-    article.append(link, el('span', 'post-title', p.title), el('small', '', 'Läs inlägg'));
-    return article;
-  };
-
+     A button from partials/load-more.html, in or after the listing [data-listing="…"].
+     posts.json (layouts/home.posts.json) holds each item's HTML, rendered by the same
+     partials as the page, so the markup lives in one place. New items go in before the row. */
   let postsRequest;
   const getPosts = src => (postsRequest ??= fetch(src)
     .then(r => { if (!r.ok) throw new Error(`posts.json: HTTP ${r.status}`); return r.json(); })
@@ -303,15 +295,17 @@
       btn.disabled = true;
       try {
         const posts = (await getPosts(btn.dataset.src)).filter(p => p.type === type);
-        const from = list.querySelectorAll(':scope > article').length;
-        const items = posts.slice(from, from + batch).map(type === 'work' ? workCard : blogItem);
-        for (const item of items) row?.parentElement === list ? list.insertBefore(item, row) : list.append(item);
+        const from = list.querySelectorAll(':scope > :not(.load-row)').length;
+        const next = document.createElement('template');
+        next.innerHTML = posts.slice(from, from + batch).map(p => p.html).join('');
+        const items = [...next.content.children];
+        row.parentElement === list ? row.before(next.content) : list.append(next.content);
         items.forEach(observeReveal);
-        items[0]?.querySelector('a').focus({ preventScroll: true });
-        if (from + items.length >= posts.length) row ? row.remove() : btn.remove();
+        (items[0]?.querySelector('a') ?? items[0])?.focus({ preventScroll: true });
+        if (from + items.length >= posts.length) row.remove();
       } catch (err) {
         console.error(err);
-        btn.textContent = 'Kunde inte ladda — försök igen';
+        btn.textContent = btn.dataset.error;
       } finally {
         btn.disabled = false;
       }
@@ -335,7 +329,7 @@
     u.searchParams.delete('background');                 // background=1 would autoplay
     u.searchParams.set('autoplay', '0');
     u.searchParams.set('muted', '1');
-    const frame = Object.assign(el('iframe'), { src: u.href, hidden: true, tabIndex: -1, title: '' });
+    const frame = Object.assign(document.createElement('iframe'), { src: u.href, hidden: true, tabIndex: -1, title: '' });
     frame.setAttribute('aria-hidden', 'true');
     frame.addEventListener('load', () => frame.remove(), { once: true });
     setTimeout(() => frame.remove(), 10000);   // or if it never loads (stalled network, blocker)
@@ -384,12 +378,8 @@
       e.preventDefault();
       root.classList.add('vt-leaving');
       // Leave when main's fade-out has ended: the CSS animation decides the timing, so the
-      // duration lives only in the tokens (any unit). The timer is a backstop, should the
-      // animation never run or end.
-      let gone = false;
-      const go = () => { if (!gone) { gone = true; location.assign(url); } };
-      main.addEventListener('animationend', ev => { if (ev.target === main) go(); });
-      setTimeout(go, 1000);
+      // duration lives only in the tokens (any unit)
+      afterAnimations(main).then(() => location.assign(url));
     });
 
     // Prefetch on hover or focus, so the next page often comes from cache and the gap
@@ -408,7 +398,7 @@
     addEventListener('pageshow', e => { if (e.persisted) root.classList.remove('vt-leaving'); });
   }
 
-  /* ---------- Smooth scroll: Lenis, on condition (§7.2) ---------- */
+  /* ---------- Smooth scroll: Lenis (smooth.js), with a fine pointer and motion allowed ---------- */
   const smoothOk = matchMedia('(pointer: fine)').matches && !reduceMotion;
   if (smoothOk) {
     const src = document.querySelector('script[data-smooth]')?.dataset.smooth;

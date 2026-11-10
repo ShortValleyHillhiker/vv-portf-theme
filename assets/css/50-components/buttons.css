@@ -1,3 +1,4 @@
+/* Buttons: primary, secondary and the underlined text button, and the load-more row. */
 @layer components {
   .primary,
   .secondary {
@@ -56,4 +57,5 @@
     padding-block: var(--space-3);
   }
   .load-row button[disabled] { opacity: 0.5; cursor: default; }
+  @media (width <= 51.25em) { .load-row { justify-content: flex-start; } }   /* phones: in line with the text */
 }

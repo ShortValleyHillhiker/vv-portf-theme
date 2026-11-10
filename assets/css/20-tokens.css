@@ -1,10 +1,10 @@
-/* Registered so themes can fade between values (§3.4) */
+/* Registered so themes can fade between values */
 @property --c-bg { syntax: "<color>"; inherits: true; initial-value: #eeeeee; }
 @property --c-fg { syntax: "<color>"; inherits: true; initial-value: #241ed2; }
 @property --c-hl { syntax: "<color>"; inherits: true; initial-value: #ffdd00; }
 
 @layer tokens {
-  /* ---------- Sizing (§3.3) ----------
+  /* ---------- Sizing ----------
      Every size lands on a whole pixel (at the default 16px text size).
      Fixed scale first, outside @supports: browsers without progress() (Safari before 26,
      so every iOS browser on an older iPhone) never see the fluid tokens. Phone first: the
@@ -23,7 +23,7 @@
     --space-3: 1.4375rem; /* 23px */
     --space-5: 2.875rem;  /* 46px */
   }
-  /* Tablet and up: the desktop scale, tuned against the old site (fs-1 ≈ 15px, gaps 8 / 16 / 32px) */
+  /* Tablet and up: the desktop scale */
   @media (width > 48em) { html {
     --fs-1: 0.9375rem;    /* 15px */
     --fs-2: 1.125rem;     /* 18px */
@@ -45,7 +45,7 @@
       --p: progress(100vw, 375px, 1440px);
 
       --base:  calc(1rem + 0.14rem * var(--p));       /* body text: 16px → 18.2px */
-      /* ×1.125 phone → ×1.2 from tablet up (the old site switched at 528px) */
+      /* ×1.125 on phones → ×1.2 from tablet up */
       --type-ratio: calc(1.125 + 0.075 * progress(100vw, 375px, 768px));
       /* Type only (not space) runs 10% smaller on phones, full size at 1440px.
          Every size below is rounded to a whole pixel. */
@@ -122,7 +122,7 @@
     --z-intro: 101;
   }
 
-  /* ---------- Layout (§3.5) ---------- */
+  /* ---------- Layout ---------- */
   html {
     --gutter: var(--space-2);
     --chip: round(var(--space-2) * 3.2, 1px);
@@ -164,7 +164,7 @@
   @media (width <= 51.25em) { html { --page-cols: 2; --pad-end: var(--hud-clearance); } }
   @media (width <= 33em)    { html { --page-cols: 1; --g-content: 1fr; } }
 
-  /* ---------- Colour (§3.4) ---------- */
+  /* ---------- Colour ---------- */
   html {
     /* primitives */
     --grey:   #eeeeee;

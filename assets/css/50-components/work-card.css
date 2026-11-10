@@ -1,3 +1,4 @@
+/* Work cards: the case grid on the home page. */
 @layer components {
   /* On the page grid: each card spans --card-span page columns (two per row on desktop).
      Every second card drops a step, so the rows read as an editorial stagger. */

@@ -1,3 +1,4 @@
+/* Reset: browser defaults evened out. The first layer, so everything after it wins. */
 @layer reset {
   *, *::before, *::after { box-sizing: border-box; }
   * { margin: 0; }
@@ -23,7 +24,7 @@
     cursor: pointer;
   }
 
-  /* Scrollbars hidden, as on the old site. Revisit now that Lenis is in (stack.md open items). */
+  /* Scrollbars hidden: sideways strips show there's more with edge fades instead (about.css) */
   * { scrollbar-width: none; }
   *::-webkit-scrollbar { display: none; }
 
