@@ -25,15 +25,15 @@ about:
     - role: Creative Director
       text: Jag vill bygga från grunden, nörda ner mig i briefen och knåda. Begränsningar är befriande och ökar möjligheten för kreativitet.
     - role: Projektledare
-      text: Lol
+      text: Typ den viktigaste personen jag mött på en byrå? Utan er hade jag suttit och knuffat pixlar i evigheter.
     - role: Mediaköp
-      text: lmao vad gör du här
+      text: Säg mig, hur ska jag optimera mina annonser när AVD ligger på 0,65s? Om VCR ligger 1,5% och och CTR 0,5%, vem ska jag skylla på? Meta?
     - role: Art director
       text: Jag har en stark hatkärlek till smarta kampanjer. Sånt som får en att utbryta i ett ”fan vad bra... Jag hatar det”. När insikten är tydlig redan innan du fått den förklarad och budskapet bottnar i empati.
     - role: Copywriter
-      text: Du kanske klickade här för att du hittade ett stavfel? Hör av dig!
+      text: Du kanske klickade här för att du hittade ett stavfel? Säg till!
     - role: Webbutvecklare
-      text: '<head> === code:is(:first-child), jag fattar när display: flex; är bättre än grid. Och {{ "content_area" }}, och theme.json'
+      text: '::victor{--intresse-webb:99999}; victor.body.getHead === code.firstChild // Design bygger på begränsningar, det är tydligt när jag tänkt i display: flex; || grid;'
   copy:
     - Under sju år har jag testat mycket, från eget företag till frilans, in-house och reklambyrå. Från småskaligt varumärkesbygge till heltäckande kampanjer. Jag vill leverera ambitiösa kreativa lösningar och är övertygad om att det kräver samarbete med andra kreatörer. Fler anekdoter, tolkningar och upplevelser är vad som möjliggör empatisk reklam som känns i magen.
     - Jag har arbetat med kunder som SSAB, Asics, Dekra, Ejendals, Göteborgsvarvet, Götaplatsgruppen, Falu Gruva, Dalelven och Careium samt in-house i en hårt reglerad bransch, med brett varumärkesansvar från daglig kommunikation till strategi, kampanj och varumärke.
@@ -75,7 +75,7 @@ background:
 blog:
   label: Lösa skott
   more: Ladda fler inlägg
-  text: Har du tagit dig så här långt ner, kanske du tillochmed vill läsa mer? Titt som tätt får jag för mig att skriva något i förhoppningen om att någon läser.
+  text: 'Har du tagit dig så här långt ner, kanske du tillochmed vill läsa mer? Titt som tätt får jag för mig att skriva något, oftast gör jag inte det men ibland går det an:'
 
 contact:
   label: Kontakt
