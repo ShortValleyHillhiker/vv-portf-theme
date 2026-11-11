@@ -47,10 +47,6 @@ Idén var enkel: skapa ett uttryck som känns taktilt och lyfter naturmaterial i
 
 {{< vimeo id="1231426624" class="large" >}}
 
-{{< text >}}
-När det var dags att bygga hemsida lades fokus mer på en stilren design, svartvitt och 
-{{< /text >}}
-
 ![Laptop och mobil som visar Vesta Arkitekters webbplats med svartvita projektbilder.](bnw3.webp)
 {.large}
 
