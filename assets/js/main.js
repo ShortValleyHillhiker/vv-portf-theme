@@ -37,6 +37,78 @@ import params from '@params';   // from hugo.toml, via js.Build in head.html
   if (themeInput) {
     themeInput.addEventListener('input', () => applyTheme(themeInput.valueAsNumber));
     applyTheme(themeOf());
+
+    /* Dragging. iOS Safari drags a range by its thumb, and this input has none:
+       appearance is none and no ::-webkit-slider-thumb is defined. Tapping still
+       works (that is a separate path in the engine), so the scale could be tapped
+       dot by dot but never dragged. Mapping the pointer to a step fixes that, and
+       makes the whole scale draggable rather than just a thumb-sized spot.
+       A tap is left alone: the drag only takes over once the pointer has moved. */
+    const DRAG_THRESHOLD = 4;
+    let dragId = null, startY = 0, dragging = false;
+
+    /* Rutan att mappa draget mot. Chipset är sista barnet i en bottenankrad
+       kolumn, så underkanten ligger still och höjden växer uppåt — och den
+       höjden animeras (block-size, hud.css). Att mäta elementet mitt i
+       övergången ger därför en ruta som är allt mellan 45px och 270px hög,
+       och ett drag mot den hamnar flera steg fel. Den öppna höjden är känd:
+       sex gånger min-block-size, som inte animeras. Räkna fram rutan i
+       stället, så är mappningen rätt redan första bildrutan. */
+    const scaleRect = () => {
+      const r = themeChip.getBoundingClientRect();
+      const h = parseFloat(getComputedStyle(themeChip).minBlockSize) * (+themeInput.max);
+      return { top: r.bottom - h, bottom: r.bottom, left: r.left, right: r.right, height: h };
+    };
+
+    const inside = (r, e) => e.clientX >= r.left && e.clientX <= r.right
+                          && e.clientY >= r.top  && e.clientY <= r.bottom;
+
+    /* --open (hud.css) styr höjden och prickarna. Med musen sätts den av
+       :hover — men setPointerCapture slutar uppdatera :hover, så skalan skulle
+       klappa ihop mitt i draget. Därför håller vi den öppen själva så länge
+       pekaren är kvar över den öppna rutan. Touch rörs inte: där håller
+       :focus-within skalan öppen, och fångsten påverkar inte fokus. */
+    const holdOpen = on => on ? themeChip.style.setProperty('--open', '1')
+                              : themeChip.style.removeProperty('--open');
+
+    const chipOpen = () => getComputedStyle(themeChip).getPropertyValue('--open').trim() === '1';
+
+    themeChip.addEventListener('pointerdown', e => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      if (!chipOpen()) return;                 // stängd skala: tryckningen öppnar bara
+      if (e.pointerType === 'mouse') holdOpen(true);
+      dragId = e.pointerId; startY = e.clientY; dragging = false;
+    });
+
+    themeChip.addEventListener('pointermove', e => {
+      if (e.pointerId !== dragId) return;
+      if (!dragging && Math.abs(e.clientY - startY) < DRAG_THRESHOLD) return;
+      if (!dragging) {
+        dragging = true;
+        try { themeChip.setPointerCapture(dragId); } catch {}
+      }
+      const r = scaleRect();
+      const t = 1 - (e.clientY - r.top) / r.height;          // 0 längst ned, 1 längst upp
+      const n = Math.round(Math.min(1, Math.max(0, t)) * themeInput.max);
+      if (n !== themeInput.valueAsNumber) applyTheme(n);
+    });
+
+    const endDrag = e => {
+      if (e.pointerId !== dragId) return;
+      try { themeChip.releasePointerCapture(dragId); } catch {}
+      // :hover är fortfarande falskt direkt efter fångsten, så den går inte att
+      // fråga — behåll det öppna läget om pekaren släppte innanför skalan.
+      if (!inside(scaleRect(), e)) holdOpen(false);
+      dragId = null; dragging = false;
+    };
+    themeChip.addEventListener('pointerup', endDrag);
+    themeChip.addEventListener('pointercancel', endDrag);
+
+    // Släpp det påtvingade öppna läget först när pekaren verkligen lämnat.
+    document.addEventListener('pointermove', e => {
+      if (dragId !== null || !themeChip.style.getPropertyValue('--open')) return;
+      if (!inside(scaleRect(), e)) holdOpen(false);
+    }, { passive: true });
   } else {
     paintFavicon();
   }

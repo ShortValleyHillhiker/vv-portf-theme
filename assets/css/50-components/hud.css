@@ -133,6 +133,10 @@
     .hud-theme:focus-within {
       --open: 1;
       background-color: var(--c-bg-80);
+      /* Bara medan skalan är öppen: ett lodrätt drag här ska dra reglaget,
+         inte rulla sidan. Stängd behåller chipset manipulation, så att ett
+         svep som råkar börja på den 48px stora knappen fortfarande rullar. */
+      touch-action: none;
     }
     .hud-theme:not(:focus-within) input { pointer-events: none; }
   }
