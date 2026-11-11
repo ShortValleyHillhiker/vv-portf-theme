@@ -32,15 +32,15 @@
 
   /* ---------- Break-out ----------
      A .breakout block starts in column 1, over the nav rail. Its section widens to
-     column 1; the section's other children stay in column 2+ (on tablet the whole
-     section breaks out). Phones have no rail: everything is full width there.
+     column 1; the section's other children stay in column 2+ (on tablet they widen
+     to column 1 too). Phones have no rail: everything is full width there.
      One selector for every width, so each override reliably wins. */
   main > section:has(> .breakout) { grid-column: 1 / -1; }
   main > section:has(> .breakout) > :not(.breakout) { grid-column: 2 / -1; }
 
   /* What covers the rail: a backdrop in the page colour behind the block, across the
      rail column only, fading in over --breakout-fade above and below, so the rail is
-     covered gradually instead of cut off. Desktop: the block; tablet: its section. */
+     covered gradually instead of cut off. Always the block, never the section. */
   /* :where keeps this at zero specificity, so the media blocks below can switch it on */
   :where(.breakout, main > section:has(> .breakout))::before {
     content: "";
@@ -65,13 +65,22 @@
       &::before { display: block; }
     }
   }
+  /* Tablet: every child widens to column 1, so one cover behind the whole run.
+     The section gets position but no z-index, so it is not a stacking context:
+     that lets the cover sit above the nav while the children sit above the
+     cover. One cover cannot overlap a sibling's text the way per-child covers
+     did. A section whose last block goes back to column 2 limits the cover to
+     the rows that break out (see .about-content in about.css). */
   @media (width > 51.25em) and (width <= 64em) {
+    main > section:has(> .breakout) > :not(.breakout) { grid-column: 1 / -1; }
     main > section:has(> .breakout) {
       position: relative;
-      z-index: var(--z-breakout);
-      &::before { display: block; }
+      &::before { display: block; z-index: var(--z-breakout); }
     }
-    main > section:has(> .breakout) > :not(.breakout) { grid-column: 1 / -1; }
+    main > section:has(> .breakout) > * {
+      position: relative;
+      z-index: calc(var(--z-breakout) + 1);
+    }
   }
   @media (width <= 51.25em) {
     main > :is(section, footer) { grid-column: 1 / -1; }

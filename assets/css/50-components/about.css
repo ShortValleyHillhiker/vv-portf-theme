@@ -70,6 +70,13 @@
   /* Tablet: the section breaks out to column 1 (40-layout.css); the long copy keeps its indent */
   @media (width > 51.25em) and (width <= 64em) {
     #om-mig > .about-content { grid-column: 2 / -1; }
+    /* .about-content is back on the grid, so the rail cover stops above it
+       instead of running the section's full height: placing the cover in the
+       grid limits it to the two rows that do break out. */
+    #om-mig::before {
+      grid-column: 1;
+      grid-row: 1 / 3;
+    }
   }
   @media (width <= 64em) { .about-content > * { grid-column: 1 / -1; } }
 
