@@ -6,7 +6,7 @@ description: Visuell identitet och ny webbplattform för Västmanland-Dalarna mi
 category: Varumärke
 tags: [Art direction, Varumärke, Webbdesign]
 banner: vdmb-2.webp
-intro: "Västmanland-Dalarna miljö- och byggförvaltning är ett samarbete mellan tre kommuner: Avesta, Fagersta och Norberg. Verksamheten sträcker sig från bygglov och stadsplanering till miljö- och vattentillsyn. Förvaltningen behövde en egen identitet, tydligt skild från kommunerna, och i förlängningen en ny webbplattform där invånare och företag enkelt finner information, handlingar mm."
+intro: "Västmanland-Dalarna miljö- och byggförvaltning är ett samarbete mellan tre kommuner: Avesta, Fagersta och Norberg. Verksamheten sträcker sig från bygglov och stadsplanering till miljö- och vattentillsyn. Förvaltningen behövde en egen identitet, tydligt skild från kommunerna, och i förlängningen en ny webbplattform där invånare och företag enkelt finner rätt information."
 ---
 
 {{< vimeo id="1230978350" class="large" >}}
@@ -29,14 +29,14 @@ Figurmärket samlar hela organisationens uppdrag i ett: bostaden, industrin och 
 {{< vimeo id="1230978352" class="large" >}}
 
 {{< text >}}
-Lila bär identiteten med gult och orange som primära accenter. Det stilgrepp som blir bärande för varumärkets illustrationer bygger på enkla geometriska linjeillustrationer vars komplexitet kan skalas upp beroende på ändamål.
+Lila bär identiteten med gult och orange som primära accenter. Tillsammans med stilgreppet kring varumärkets illustrationer, som bygger på enkla geometriska linjeillustrationer är färgerna bärande för varumärket.
 {{< /text >}}
 
 ![Tre affischer: förvaltningens namn på beige botten, lanseringen av den nya webbplattformen för plan- och byggärenden på lila, och samma budskap i grått med orange accent.](vdmb-3.webp)
 {.large}
 
 {{< lead >}}
-Identiteten tillämpades direkt på organisationens nya hemsida, där förvaltningen samlar digitala e-tjänster och dokument med ärendestatus och annan information som medborgarna är i behov av.
+När identiteten stod klar tillämpades den direkt i nästa steg av projektet: En ny hemsida där förvaltningen samlar sina digitala e-tjänster, gällande föreskrifter, referenser och dokument.
 {{< /lead >}}
 
 ![Laptop och mobil med förvaltningens nya webbplats, omgivna av sidor ur den grafiska manualen: logotyp, färger och typografi.](vdmb-webhero.webp)
