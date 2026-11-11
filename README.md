@@ -80,7 +80,7 @@ Plain Markdown, plus a few blocks. A lone image becomes a figure; attributes on 
 
 ## Preview
 
-The `next` branch of vv-portf-theme is the preview. Every push builds it with `.github/workflows/preview.yml` and publishes it on the repo's GitHub Pages (shortvalleyhillhiker.github.io/vv-portf-theme/). The live site is untouched.
+The `main` branch of vv-portf-theme is the preview until the site goes live. Every push builds it with `.github/workflows/preview.yml` and publishes it on the repo's GitHub Pages (shortvalleyhillhiker.github.io/vv-portf-theme/). The live site is untouched.
 
 - `hugo --environment preview` blocks every crawler in `robots.txt` and puts `noindex` on every page.
 - Drafts are left out, as in a real release. Hugo 0.169 or later (the version is set in the workflow).

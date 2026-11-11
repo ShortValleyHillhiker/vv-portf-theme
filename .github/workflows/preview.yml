@@ -1,11 +1,11 @@
-# Builds the next branch as a preview and publishes it on this repo's GitHub Pages.
+# Builds the main branch as a preview and publishes it on this repo's GitHub Pages.
 # The preview environment keeps search engines out (robots.txt and noindex on every page).
 # Drafts are left out, as in a real release.
 name: Preview
 
 on:
   push:
-    branches: [next]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
