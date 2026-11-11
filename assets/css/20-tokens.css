@@ -133,7 +133,6 @@
     /* one page column + gutter; resolve it on a full-width element (40-layout.css) */
     --rail-cover: calc((100% - (var(--page-cols) - 1) * var(--gutter)) / var(--page-cols) + var(--gutter));
     --bullet: 0.35em;   /* square list bullets (30-base.css) */
-    --media-max: calc(100svh - var(--hud-top) * 2); /* tallest an image may be: always fits the screen */
     --pad-block: calc(var(--space-5) * 2.5);
     /* Page bottom. Desktop: one gutter, so the last content ends level with the HUD
        slider's bottom. Phones: clear the HUD controls (two chips + their gap) as well. */

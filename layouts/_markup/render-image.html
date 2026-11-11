@@ -16,9 +16,7 @@
        lone small figure */}}
   {{ $n := .Page.Store.Get "gridItems" | default 0 }}
   {{ $kind := cond (in (split $class " ") "large") "full" (cond (gt $n 0) "grid" "half") }}
-  {{ $r := split $ratio "/" }}
-  {{ $sizes := partial "sizes.html" (dict "kind" $kind "n" $n "zoom" (cond $parallax site.Params.parallaxZoom false) "loading" $a.loading
-       "ratio" (div (float (trim (index $r 0) " ")) (float (trim (index $r 1) " ")))) }}
+  {{ $sizes := partial "sizes.html" (dict "kind" $kind "n" $n "zoom" (cond $parallax site.Params.parallaxZoom false) "loading" $a.loading) }}
   {{ partial "img.html" (dict "res" $res "alt" .PlainText "loading" $a.loading "sizes" $sizes) }}
   {{ with .Title }}<figcaption>{{ . }}</figcaption>{{ end }}
 </figure>

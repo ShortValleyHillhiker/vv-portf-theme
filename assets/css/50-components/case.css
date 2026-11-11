@@ -102,9 +102,9 @@
   @media (width <= 37.5em) { .case-grid > * { flex-basis: 100%; } }
 
   /* Every case figure carries its media's real ratio as --media-ratio ("1920 / 1080"): from the image
-     file, or from Vimeo for videos (Hugo, at build time). The media keeps that shape. A medium
-     taller than the screen shrinks in width instead of being cropped. A different shape can be
-     forced (ratio="…" in the Markdown); cover then crops to it. */
+     file, or from Vimeo for videos (Hugo, at build time). The media keeps that shape and always
+     fills its figure, so a tall image is tall and you scroll it rather than seeing it inset. A
+     different shape can be forced (ratio="…" in the Markdown); cover then crops to it. */
   .case-media {
     position: relative;
     align-self: start;
@@ -112,7 +112,7 @@
   }
   .case-media :is(img, iframe) {
     display: block;
-    inline-size: min(100%, var(--media-max) * var(--media-ratio));
+    inline-size: 100%;
     block-size: auto;
     aspect-ratio: var(--media-ratio);
     object-fit: cover;

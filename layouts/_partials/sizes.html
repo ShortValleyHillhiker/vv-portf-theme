@@ -10,15 +10,11 @@
        zoom:  the image is drawn zoomed by that factor (parallax: site.Params.parallaxZoom),
               so it needs that many more pixels
        loading: "eager" leaves out "auto" (only lazy images can use it)
-       ratio: width / height (number). Case media never grows taller than the screen
-              (--media-max = 100svh - 2 x HUD row, about 132px), so the width is capped at
-              (100vh - 132px) x ratio, as in case.css
      Lazy images without zoom get "auto" first: browsers that support it use the real layout
      width; others use the list after it. */}}
-{{/* The two layout constants, mirrored from the CSS: the gap between grid items (--gutter,
-     --space-2) and the space the HUD takes above and below media (2 x --hud-top) */}}
+{{/* The layout constant mirrored from the CSS: the gap between grid items (--gutter,
+     --space-2) */}}
 {{ $gap := 16 }}
-{{ $hud := 132 }}
 {{ $S := slice
   (dict "mq" "(max-width: 51.25em)" "w" "100vw - 32px")
   (dict "mq" "(max-width: 64em)" "w" "66.67vw - 27px")
@@ -50,7 +46,6 @@
 {{ if and (not .zoom) (ne .loading "eager") }}{{ $out = $out | append "auto" }}{{ end }}
 {{ range $rows }}
   {{ $w := .w }}
-  {{ with $.ratio }}{{ $w = printf "min(%s, (100vh - %dpx) * %.4f)" $w $hud (float .) }}{{ end }}
   {{ $w = cond $.zoom (printf "calc((%s) * %v)" $w $.zoom) (printf "calc(%s)" $w) }}
   {{ $out = $out | append (trim (printf "%s %s" .mq $w) " ") }}
 {{ end }}
