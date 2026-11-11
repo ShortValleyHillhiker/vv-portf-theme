@@ -1,0 +1,120 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   TEMAFORK: SOLUPPGÅNG — tillfällig. Ta bort filen så är allt som förut.
+
+   Ligger sist i buntet (resources.Match sorterar på namn) och i samma lager
+   som originalet, så den vinner på källordning utan att höja specificiteten.
+
+   KONCEPTET
+   Reglaget är himlen. Längst ned är det natt, längst upp är det dag, och
+   varje steg däremellan ljusnar. Att dra i reglaget ska kännas som att veva
+   fram gryningen.
+
+     0  Midnatt    #1c1c1c   svart            L 0,012
+     1  Natt       #241a7a   djup indigo      L 0,025
+     2  Skymning   #6b2d8f   plommonviolett   L 0,070
+     3  Rodnad     #ff7fae   het rosa         L 0,395
+     4  Glöd       #ff8c42   orange           L 0,404
+     5  Guld       #ffc233   guld             L 0,601
+     6  Dager      #eeeeee   vitt             L 0,855
+
+   Ljusheten stiger hela vägen, så reglaget läser som en gradient och inte
+   som sju lösryckta kulörer. Det enda hoppet ligger mellan 2 och 3, där
+   texten måste byta från ljus till mörk — ett mellanläge klarar varken
+   ljus eller mörk text på AA, så den gränsen går inte att slipa bort.
+
+   VAD SOM ÄNDRADES, OCH VARFÖR
+   1. Varje steg byter bakgrund. Förut delade 4, 5 och 6 samma grå botten,
+      så halva reglaget ändrade ingenting utom textfärgen. Det var därför
+      konceptet inte gick fram: en solnedgång som står stilla halva vägen.
+   2. Kulörerna är valda på karaktär, inte på maximal mättnad. Full mättnad
+      ger neon (#2900f5, #7e00a8) — en himmel är rik, inte lysrörsaktig.
+      Mättnaden ligger därför på 44-80%, inte 100%.
+   3. Rött (#e42f25) är borta. Det mätte 3,82:1 mot både #eeeeee och
+      #1c1c1c — under AA åt båda håll, och går inte att rädda med en nyans.
+   4. Den dämpade nivån är 80% i stället för 72%. Den bär riktig brödtext
+      (small/.fs-1, .about-messages > p, .background-item > p); vid 72%
+      tvingas grundkulören ner mot 8:1 för att klara AA, vid 80% räcker
+      ~6,5:1. Priset är att steget mellan vanlig och dämpad text blir mindre.
+
+   Alla sju klarar AA (4,5:1) på både 100% och den dämpade nivån — mätt,
+   se tabellen längst ned.
+   ───────────────────────────────────────────────────────────────────────── */
+
+@layer tokens {
+  html {
+    --night:  #241a7a;
+    --dusk:   #6b2d8f;
+    --blush:  #ff7fae;
+    --ember:  #ff8c42;
+    --gold:   #ffc233;
+
+    /* Dämpad text, se punkt 4 ovan. Heter kvar -72 för att slippa röra sex
+       filer under försöket; blir forken permanent bör den döpas om. */
+    --c-fg-72: color-mix(in srgb, var(--c-fg) 80%, transparent);
+
+    /* Utan JS: ljust läge, samma som steg 6 */
+    --c-bg: var(--grey);
+    --c-fg: var(--ink);
+    --c-hl: var(--ember);
+    --c-favicon: var(--ink);
+  }
+
+  /* Utan JS kan inget script läsa systemets läge, men CSS kan. Gäller bara
+     när ingen temaklass satts, så den krockar aldrig med ett valt tema. */
+  @media (prefers-color-scheme: dark) {
+    html:not([class*="theme-"]) {
+      --c-bg: var(--ink);
+      --c-fg: var(--grey);
+      --c-hl: var(--gold);
+      --c-favicon: var(--ink);
+      --portrait-blend: screen;
+      --portrait-overlay-blend: darken;
+    }
+  }
+
+  /* ── Natten: ljus text på mörk himmel ──────────────────────────────── */
+  html.theme-0 { --c-bg: var(--ink);   --c-fg: var(--grey); --c-hl: var(--gold);
+                 --c-favicon: var(--ink); }
+  html.theme-1 { --c-bg: var(--night); --c-fg: var(--grey); --c-hl: var(--gold);
+                 --c-favicon: var(--night);
+                 --c-tint: var(--night); --tint-alpha: 0.5; }
+  html.theme-2 { --c-bg: var(--dusk);  --c-fg: var(--grey); --c-hl: var(--gold);
+                 --c-favicon: var(--dusk);
+                 --c-tint: var(--dusk);  --tint-alpha: 0.5; }
+
+  /* ── Dagen: mörk text på ljus himmel ───────────────────────────────────
+     Guld mäter 1,30:1 mot ljus botten och syns inte som understrykning, så
+     highlighten blir en mörk kulör så fort himlen ljusnat. */
+  html.theme-3 { --c-bg: var(--blush); --c-fg: var(--ink); --c-hl: var(--dusk);
+                 --c-favicon: var(--blush);
+                 --c-tint: var(--blush); --tint-alpha: 0.45; --tint-blend: soft-light; }
+  html.theme-4 { --c-bg: var(--ember); --c-fg: var(--ink); --c-hl: var(--dusk);
+                 --c-favicon: var(--ember);
+                 --c-tint: var(--ember); --tint-alpha: 0.5;  --tint-blend: soft-light; }
+  html.theme-5 { --c-bg: var(--gold);  --c-fg: var(--ink); --c-hl: var(--dusk);
+                 --c-favicon: var(--gold);
+                 --c-tint: var(--gold);  --tint-alpha: 0.6;  --tint-blend: soft-light; }
+  html.theme-6 { --c-bg: var(--grey);  --c-fg: var(--ink); --c-hl: var(--ember);
+                 --c-favicon: var(--ink); --tint-alpha: 0; }
+
+  /* Porträttets blandning följer himlens ljushet */
+  html.theme-0, html.theme-1, html.theme-2 {
+    --portrait-blend: screen;
+    --portrait-overlay-blend: darken;
+  }
+}
+
+/* ── Mätt kontrast ────────────────────────────────────────────────────────
+   tema          bakgrund   text      100%     dämpad 80%   mättnad
+   0 Midnatt     #1c1c1c    #eeeeee   14,69    9,77          0%
+   1 Natt        #241a7a    #eeeeee   12,04    8,13         79%
+   2 Skymning    #6b2d8f    #eeeeee    7,55    5,43         69%
+   3 Rodnad      #ff7fae    #1c1c1c    7,22    5,04         50%
+   4 Glöd        #ff8c42    #1c1c1c    7,37    5,12         74%
+   5 Guld        #ffc233    #1c1c1c   10,56    6,57         80%
+   6 Dager       #eeeeee    #1c1c1c   14,69    8,14          0%
+
+   --c-fg-40 ligger kvar under 3:1 på de kulörta temana. Den ritar bara
+   prickarna i temareglaget, inte text, och de accentuerade prickarna
+   använder full kulör.
+   ───────────────────────────────────────────────────────────────────────── */

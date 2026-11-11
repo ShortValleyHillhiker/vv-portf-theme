@@ -10,14 +10,18 @@
 document.documentElement.classList.add('js');
 try {
   const t = localStorage.getItem('tema');
-  document.documentElement.classList.add('theme-' + (/^[0-6]$/.test(t) ? t : 6));
+  // Utan eget val: följ systemets läge. Mörkt ger reglagets nedersta steg
+  // (Midnatt), ljust ger det översta (Dager) — de två svartvita ytterlägena.
+  // Ett sparat val vinner alltid; det är användarens uttryckliga beslut.
+  const sysDark = matchMedia('(prefers-color-scheme: dark)').matches;
+  document.documentElement.classList.add('theme-' + (/^[0-6]$/.test(t) ? t : (sysDark ? 0 : 6)));
   if (sessionStorage.getItem('grid')) document.documentElement.setAttribute('data-grid', '');
   // Home intro (data-intro on the home page's <html>): once per session, counted from ANY
   // page, so landing on a case first means the home page skips it. sessionStorage is per tab.
   const root = document.documentElement;
   if (root.dataset.intro && (sessionStorage.getItem('intro') || matchMedia('(prefers-reduced-motion: reduce)').matches)) root.dataset.intro = 'seen';
   sessionStorage.setItem('intro', '1');
-} catch { document.documentElement.classList.add('theme-6'); }
+} catch { document.documentElement.classList.add(matchMedia('(prefers-color-scheme: dark)').matches ? 'theme-0' : 'theme-6'); }
 // Arrival: the content comes in through the reveals (main.js), which start on 'arrived':
 // after the old page has faded out (view transition), or once this page has settled.
 // Not while hidden (preloaded as the address is typed, a background tab): it arrives when shown.
