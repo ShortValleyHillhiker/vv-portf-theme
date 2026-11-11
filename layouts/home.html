@@ -82,7 +82,10 @@
 </section>
 {{ end }}
 
-{{ with $p.blog }}
+{{/* Bara när det finns inlägg: rubrikens ingress bjuder in till mer läsning,
+     så en tom lista läser sämre än ingen sektion alls. Navigationen tappar sin
+     post på samma villkor (hud.html). */}}
+{{ if $blog }}{{ with $p.blog }}
 <section id="losa-skott">
   <div class="section-heading" data-reveal-children>
     <h2 class="fs-1">{{ .label }}</h2>
@@ -95,7 +98,7 @@
     {{ end }}
   </div>
 </section>
-{{ end }}
+{{ end }}{{ end }}
 
 {{ with $p.contact }}
 <footer class="contact" id="kontakt" aria-labelledby="kontakt-rubrik">

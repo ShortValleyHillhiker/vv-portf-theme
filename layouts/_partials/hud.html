@@ -4,7 +4,14 @@
   <div class="layer_rail">
     <nav class="site-nav" id="site-nav" aria-label="Sektioner">
       <ul role="list">
-        {{ range $i, $m := site.Menus.main }}
+        {{/* Utan publicerade inlägg renderas inte #losa-skott (home.html), och
+             posten skulle peka på ett ankare som inte finns. URL:en står i
+             hugo.toml — byts den där måste den bytas här. */}}
+        {{ $items := site.Menus.main }}
+        {{ if not (where site.RegularPages "Section" "blog") }}
+          {{ $items = where $items "URL" "ne" "/#losa-skott" }}
+        {{ end }}
+        {{ range $i, $m := $items }}
         <li class="site-nav_item" style="--i:{{ add $i 1 }}"><a href="{{ $m.URL }}">{{ $m.Name }}</a></li>
         {{ end }}
       </ul>
