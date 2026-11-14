@@ -30,6 +30,10 @@ jobs:
       - uses: actions/checkout@v4
       - id: pages
         uses: actions/configure-pages@v5
+        with:
+          # The repo had no Pages site, so this step 404'd and every run died here.
+          # enablement lets the action turn Pages on itself (needs the pages: write above).
+          enablement: true
       - name: Build
         run: hugo --environment preview --baseURL "${{ steps.pages.outputs.base_url }}/"
       - uses: actions/upload-pages-artifact@v3
