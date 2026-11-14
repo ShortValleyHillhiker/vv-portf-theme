@@ -7,7 +7,11 @@ category: "Varumärke"
 tags: [Art direction, Varumärke, Webbdesign]
 banner: v002.webp
 intro: "Vesta Arkitekter var under 2024 en arkitektbyrå grundad av två nyexaminerade arkitekter från Chalmers som vägrade acceptera byggbranschens slit-och-släng-kultur. På en tuff arbetsmarknad valde de att gå sin egen väg – inte bara som arkitekter, utan lika mycket som utbildare och hållbarhetsexperter."
+#Caset saknar bilder på logotyp. Jag tänker att det är en bra idé med ett tillägg där logotypskisserna finns på skisspapper som sakta lagras på varandra och visar den slutgiltiga logotypen. Kan vara en kul animation att ha inkluderad i stopmotion, ta med en skalstock etc.
+
 ---
+
+
 
 {{< vimeo id="1231426660" class="large" >}}
 
@@ -18,15 +22,14 @@ Redan under vår första workshop blev det tydligt att det bakom Vesta stod två
 {{< /text >}}
 
 ![Brevpapper och kort med Vesta Arkitekters logotyp ovanpå ett svartvitt tryck av en trädstams årsringar, mot svart bakgrund.](v001.webp)
-{.large}
+{.large parallax=true}
 
 {{< text >}}
 Vi var snabba att påpeka hur stor visionen var och frågade om den inte var lite naiv. Då svarade en av grundarna:
-{{< /text >}}
-
 {{< quote >}}
 ”Det är just för att vi är unga och naiva som vi ens vågar testa det här.”
 {{< /quote >}}
+{{< /text >}}
 
 {{< text >}}
 Vi förstod snabbt att Vesta drivs av en stark övertygelse: hållbart byggande sker genom människor, och att vägen dit går via ren och skär materialkärlek. Det gäller allt från materialens kulturhistoria till deras fysiska egenskaper. Ett naturmaterial kan förstås teoretiskt, men Vesta vill också att materialen ska förstås intuitivt. Är materialet hårt, poröst eller elastiskt? Det är kunskap som kommer från att utöva hantverket med material och verktyg i händerna.
@@ -67,7 +70,7 @@ Ett av Vestas önskemål var att det skulle synas att de var ambitiösa arkitekt
 {{< vimeo id="1231426624" class="large" >}}
 
 ![Laptop och mobil som visar Vesta Arkitekters webbplats med svartvita projektbilder.](bnw3.webp)
-{.large}
+{.large parallax=true}
 
 {{< grid >}}
 ![Laptop på ett träbord med Vesta Arkitekters webbplats och projektbilder.](kronhuset-23.webp)

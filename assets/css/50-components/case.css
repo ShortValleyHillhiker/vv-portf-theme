@@ -1,4 +1,4 @@
-/* Case and blog pages: intro, text blocks, brief, quote, media and the next case at the end. */
+/* Case and blog pages: intro, text blocks, quote, media and the next case at the end. */
 @layer components {
   main:has(.case-intro) {
     row-gap: var(--gap-feature);
@@ -36,17 +36,6 @@
   .case-text.lead > p {
     font-size: var(--fs-6);
     max-inline-size: var(--measure-h);
-  }
-
-  /* ---------- Brief: label/value pairs (client, role, year …) ---------- */
-  .case-brief {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(24ch, 100%), 1fr));
-    gap: var(--space-3) var(--gutter);
-  }
-  .case-brief_label {
-    display: block;
-    margin-block-end: var(--space-1);
   }
 
   /* ---------- Quote ---------- */

@@ -4,5 +4,5 @@
   <small>{{ .org }}</small>
   <p class="fs-8">{{ .role }}</p>
   <p><span>{{ .years }}</span>, {{ .place }}</p>
-  <p>{{ .text }}</p>
+  <p>{{ .text | markdownify }}</p>
 </div>

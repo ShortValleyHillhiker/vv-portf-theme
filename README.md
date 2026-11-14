@@ -60,7 +60,6 @@ Plain Markdown, plus a few blocks. A lone image becomes a figure; attributes on 
 | `{{< text title="…" cols="2" >}}…{{< /text >}}` | Text, optionally in 2 or 3 columns |
 | `{{< grid >}}…{{< /grid >}}` | Images side by side, one per paragraph |
 | `{{< quote cite="…" >}}…{{< /quote >}}` | Large quote |
-| `{{< brief >}}` | Facts list from `brief:` in the front matter |
 | `{{< vimeo id="…" class="large" >}}` | Vimeo background video (muted loop), in the video's own shape |
 
 `vimeo` also works inside `{{< grid >}}`. All video is on Vimeo; the site hosts no video files.

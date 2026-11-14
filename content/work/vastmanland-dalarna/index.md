@@ -5,7 +5,7 @@ date: 2026-09-02
 description: Visuell identitet och ny webbplattform för Västmanland-Dalarna miljö- och byggförvaltning, som hanterar bygg- och miljöfrågor åt Avesta, Fagersta och Norberg.
 category: Varumärke
 tags: [Art direction, Varumärke, Webbdesign]
-banner: vdmb-2.webp
+banner: vdmb-webhero.webp
 intro: "Västmanland-Dalarna miljö- och byggförvaltning är ett samarbete mellan tre kommuner: Avesta, Fagersta och Norberg. Verksamheten sträcker sig från bygglov och stadsplanering till miljö- och vattentillsyn. Förvaltningen behövde en egen identitet, tydligt skild från kommunerna, och i förlängningen en ny webbplattform där invånare och företag enkelt finner rätt information."
 ---
 

@@ -6,17 +6,10 @@ description: Testsida med alla case-block.
 category: Test
 tags: [Test, Formatering]
 banner: gbgv3.webp
-intro: "Testsida med varje formateringsblock som ett case kan använda: brief, ingress, två och tre spalter, citat, mediarutnät, bildtexter och vanlig Markdown."
+intro: "Testsida med varje formateringsblock som ett case kan använda: ingress, två och tre spalter, citat, mediarutnät, bildtexter och vanlig Markdown."
 # Test content: shown with `hugo server -D`, left out of the real build
 draft: true
-brief:
-  - { label: Kund, value: Testkund AB }
-  - { label: Roll, value: "Art direction, koncept" }
-  - { label: År, value: "2026" }
-  - { label: Byrå, value: Confetti }
 ---
-
-{{< brief >}}
 
 ![Testbild, stor](gbgv1.webp "Bildtext under en stor bild (case-media large).")
 {.large}

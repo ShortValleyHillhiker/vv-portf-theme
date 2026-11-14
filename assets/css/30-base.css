@@ -99,15 +99,32 @@
   a { color: inherit; text-decoration: none; }
   a[href]:active { opacity: 0.75; }   /* real links only: an <a> without href (the home logo) is a placeholder */
 
-  p > a {
-    padding: 0 1px;
-    background-image: linear-gradient(var(--c-hl), var(--c-hl));
-    background-position: 0 100%;
-    background-repeat: no-repeat;
-    background-size: 100% var(--line-bold);
+  /* Text links: an accent underline at --line-bold, thinning to --line in the text colour on
+     hover and gone on press. text-decoration rather than a background gradient, so the line
+     skips descenders and follows the text across a line break. Hover is the only state that
+     restyles the line: keyboard users get the global :focus-visible ring below, which a
+     hover-only affordance would never give them. Reduced motion is handled globally
+     (70-motion.css). */
+  :is(p, small) > a {
+    text-decoration: underline;
+    text-decoration-thickness: var(--line-bold);
+    text-underline-offset: 0.15em;
+    transition: text-decoration-color 125ms var(--bezier),
+                text-decoration-thickness 125ms var(--bezier);
   }
-  small > a { color: var(--c-fg); text-decoration: underline; }
-  small > a:hover { text-decoration: none; }
+  /* Body copy carries the highlight; the muted contexts do not. Everything that runs at
+     --c-fg-72 (small and .fs-1 above, .about-messages > p and .background-item > p in
+     about.css) keeps the line in the text colour, so a quiet label stays quiet and hover only
+     thins it. Mute a new context there and it belongs in this list too. */
+  p > a { text-decoration-color: var(--c-hl); }
+  :is(.fs-1, .about-messages > p, .background-item > p) > a { text-decoration-color: currentColor; }
+  /* <small> is muted to --c-fg-72 above, so its links come back to full strength. */
+  small > a { color: var(--c-fg); }
+  :is(p, small) > a:hover {
+    text-decoration-color: currentColor;
+    text-decoration-thickness: var(--line);
+  }
+  :is(p, small) > a:active { text-decoration-line: none; }
 
   /* The one focus ring (tokens: --focus-*). The theme slider moves it onto its chip. */
   :focus-visible {

@@ -1,10 +1,13 @@
 {{/* Image sizes for one resource: 640, 960, 1280, 1920 and 2560 where smaller than the
-     source, plus the source width itself (capped at 2560). 2560 keeps full-width images sharp
-     on retina screens; 960 narrows the jumps for mid-size layouts. Returns dict: src (largest), srcset,
+     source, plus the source width itself (capped at 3840). A wide card on the home page is
+     drawn at ~1750 CSS px on a 2560 viewport, so a 2x screen wants ~3500: the 3840 cap leaves
+     room for that once a source is big enough. Hugo never upscales, so this only has an effect
+     for sources wider than 2560 - below that the source width is still the ceiling.
+     960 narrows the jumps for mid-size layouts. Returns dict: src (largest), srcset,
      width, height. Shared by img.html and posts.json. */}}
 {{ $widths := slice }}
 {{ range slice 640 960 1280 1920 2560 }}{{ if lt . $.Width }}{{ $widths = $widths | append . }}{{ end }}{{ end }}
-{{ $widths = $widths | append (math.Min $.Width 2560 | int) }}
+{{ $widths = $widths | append (math.Min $.Width 3840 | int) }}
 {{ $set := slice }}
 {{ $img := . }}
 {{ range $widths }}
