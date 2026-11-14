@@ -31,8 +31,12 @@ jobs:
       - id: pages
         uses: actions/configure-pages@v5
         with:
-          # The repo had no Pages site, so this step 404'd and every run died here.
-          # enablement lets the action turn Pages on itself (needs the pages: write above).
+          # This repo has no Pages site yet, so this step 404s and the run dies here.
+          # Turn it on once by hand: Settings -> Pages -> Build and deployment ->
+          # Source: GitHub Actions. enablement cannot do it for us - creating a site
+          # needs admin rights, and GITHUB_TOKEN's pages: write only deploys to an
+          # existing one ("Resource not accessible by integration"). It is kept so the
+          # run self-heals if the site is ever deleted and the token can create it.
           enablement: true
       - name: Build
         run: hugo --environment preview --baseURL "${{ steps.pages.outputs.base_url }}/"
