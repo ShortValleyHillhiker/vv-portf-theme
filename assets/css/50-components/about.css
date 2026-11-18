@@ -128,7 +128,7 @@
   }
   .blog-item small { white-space: nowrap; }
   .blog-item:is(:hover, :focus-within) {
-    border-block-end: var(--line-bold) solid var(--c-fg);
+    border-block-end-color: var(--c-fg);
     & > small { color: var(--c-fg); }
   }
   /* Last item has no line, unless hovered or focused */

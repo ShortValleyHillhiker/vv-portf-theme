@@ -79,7 +79,6 @@
     --measure: 64ch;
 
     --line: 1px;
-    --line-bold: round(0.15rem, 1px);
 
     --radius: calc(var(--space-1) * 0.5);
     --blur: 12px;
@@ -87,8 +86,8 @@
 
     /* Keyboard focus: one ring for everything (30-base.css). Always the theme's full
        foreground, never currentColor, so it shows on filled buttons and faded links alike. */
-    --focus-width: var(--line-bold);
-    --focus-offset: calc(var(--line-bold) * 1.5);
+    --focus-width: var(--line);
+    --focus-offset: calc(var(--line) * 1.5);
     --focus-color: var(--c-fg);
     --focus-room: calc(var(--focus-width) + var(--focus-offset));   /* space the ring needs outside an element */
 

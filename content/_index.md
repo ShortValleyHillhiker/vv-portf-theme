@@ -3,7 +3,7 @@ title: Victor Vennerström
 description: Victor Vennerström är en art director från Göteborg som arbetar med koncept, kampanj och form för varumärken som vill synas och resonera.
 
 intro:
-  greeting: [Tjabba!, Tjena!, Hallå!]
+  greeting: [Tjabba, Tjena, Hallå]
   label: Art director @ [Confetti](https://confetti.se/)
   heading: Mitt namn är Victor Vennerström, en vetgirig och formstark art director från Göteborg.
   buttons:
@@ -16,7 +16,7 @@ work:
 
 about:
   label: Om mig
-  statement: Jag arbetar med koncept, varumärken och design; jag tror på att bra kommunikation bygger på gott samarbete, igenkännbara insikter och att den talar mottagarens språk. Även om det är en webbcrawler eller en rekryterare.
+  statement: Jag arbetar med koncept, varumärke och design i övertygelsen om att goda resultat bygger på gott samarbete, igenkännbara insikter och att man talar mottagarens språk. Även om det är en webbcrawler eller rekryterare.
   question: Så, vad jobbar du med? Välj en lämplig titel, så pratar jag ditt språk.
   messages:
     - role: Art director

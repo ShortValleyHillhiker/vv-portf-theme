@@ -48,7 +48,7 @@
   .hud-menu_bar {
     display: block;
     inline-size: 100%;
-    block-size: var(--line-bold);
+    block-size: var(--line);
     background-color: var(--c-fg);
     transition: transform var(--transition);
   }
@@ -92,7 +92,7 @@
   }
   .hud-grid_bar {
     block-size: 100%;
-    inline-size: var(--line-bold);
+    inline-size: var(--line);
     background-color: var(--c-fg);
     transition: block-size var(--transition);
   }
@@ -166,7 +166,7 @@
     inset-block-start: calc(var(--chip-pad) + var(--index, 0) * (100% - var(--chip-pad) * 2) / 6);
     inline-size: calc(var(--space-1) * 2.5);
     block-size: calc(var(--space-1) * 2.5);
-    border: var(--line-bold) solid var(--c-fg);
+    border: var(--line) solid var(--c-fg);
     translate: 0 -50%;
     transition: inset-block-start var(--timing) var(--ease-out);
     pointer-events: none;

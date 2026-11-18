@@ -13,7 +13,8 @@
     color: var(--c-bg);
   }
   .primary:hover {
-    background-color: var(--c-fg-80);
+    border-color: var(--c-hl);
+    background-color: var(--c-hl);
     text-decoration: underline;
   }
   .secondary:hover {
@@ -38,6 +39,8 @@
     border-color: var(--c-fg);
     color: var(--c-fg);
   }
+  /* The open tab carries the accent, hovered or not */
+  .tertiary[aria-selected="true"] { border-color: var(--c-hl); }
   .tertiary:active {
     border-color: transparent;
     color: var(--c-fg);
